@@ -38,7 +38,7 @@ frame['O2scfCarbInjLb'] = frame['TotalO2Cns']/frame['AdditionsCarbInj']
 #----------------------------------------------------------------------------------------------
 Columns_list = frame.columns.values.tolist() #this will bring the columns to a list
 
-List = [X for X in Columns_list if 'ZFe' in X]
+List = [X for X in Columns_list if 'Flow' in X]
 del Columns_list[0]
 #----------------------------------------------------------------------------------------------
 
@@ -48,12 +48,21 @@ frame['AvgCurrent'] = (frame.Current1 + frame.Current2 + frame.Current3)/3
 frameNoZeros = frame[frame['AvgCurrent']>5]  #Frame without zeros on current
 #----------------------------------------------------------------------------------------------
 
+#Additional frames
+#----------------------------------------------------------------------------------------------
+
+
+#----------------------------------------------------------------------------------------------
+
 #HeatGroups
 #----------------------------------------------------------------------------------------------
 HeatGroupNoZeros = frameNoZeros.groupby('HeatNumber0LSW') #This only to get the average current without zeros.
-frame = frame[frame['OperKwhPerTon'] <= 400]
-
 HeatGroup = frame.groupby('HeatNumber0LSW')
+
+
+#if HeatGroup['OperKwhPerTon'].last() <= 400:
+#    GoodHeats = HeatGroup  this doesn't work..............
+
 
 for var in Columns_list:
     Heats[var] = HeatGroup[var].mean()
@@ -194,10 +203,14 @@ Overview['TotalO2Cns'] = Heats['TotalO2Cns']
 Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
 
 
-#plt.figure()
+
+
+
+plt.figure()
 #HeatGroup['O2scfCarbInjLb'].plot()
-#plt.legend()
-#plt.show()
+plt.legend()
+HeatGroup['B1_O2MainFlow'].plot()
+plt.show()
 
 
 
@@ -208,8 +221,6 @@ Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
 writer = pd.ExcelWriter('Heats.xlsx')
 Heats.to_excel(writer,'Heats')
 Overview.to_excel(writer,'Overview')
-
-#Overview.to_excel(writer,'Overview') #make overview Dataframe
 writer.save()
 
 #Heats.loc[19096,:]  #returns all columns for that specific Heat
