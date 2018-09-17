@@ -11,6 +11,7 @@ path = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk'
 allFiles = glob.glob(path + "/*.csv")
 frame = pd.DataFrame()
 Heats = pd.DataFrame()
+Overview = pd.DataFrame()
 list_ = []
 
 for file_ in allFiles:
@@ -171,12 +172,32 @@ Heats['Scrap9Wt'] = HeatGroup['Scrap9Wt'].last()
 Heats['Scrap10Wt'] = HeatGroup['Scrap10Wt'].last()
 Heats['O2scfCarbInjLb'] = HeatGroup['O2scfCarbInjLb'].last()
 
+Overview['PON'] = Heats['Ontime_PX3']
+Overview['MWH'] = Heats['MWH_PX3']
+Overview['HeatkWhTon'] = Heats['OperKwhPerTon'] 
+Overview['I2H1'] = Heats['I2H1']
+Overview['I2H2'] = Heats['I2H2']
+Overview['I2H3'] = Heats['I2H3']
+Overview['AvgCurr'] = (Heats['Current1']+Heats['Current2']+Heats['Current3'])/3
+Overview['PrimVolts'] = Heats['PrimaryVolts']
+Overview['B1Gas'] = Heats['B1_GasCns']
+Overview['B1O2Main'] = Heats['B1_O2MainCns']
+Overview['B1Carbon'] = Heats['B1_CarbonCns']
+Overview['B2Gas'] = Heats['B2_GasCns']
+Overview['B2O2Main'] = Heats['B2_O2MainCns']
+Overview['B2Carbon'] = Heats['B2_CarbonCns']
+Overview['B3Gas'] = Heats['B3_GasCns']
+Overview['B3O2Main'] = Heats['B3_O2MainCns']
+Overview['B3Lime'] = Heats['B3_LimeCns']
+Overview['TotalGasCns'] = Heats['TotalGasCns']
+Overview['TotalO2Cns'] = Heats['TotalO2Cns']
+Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
 
 
-plt.figure()
-HeatGroup['O2scfCarbInjLb'].plot()
-plt.legend()
-plt.show()
+#plt.figure()
+#HeatGroup['O2scfCarbInjLb'].plot()
+#plt.legend()
+#plt.show()
 
 
 
@@ -186,6 +207,7 @@ plt.show()
 
 writer = pd.ExcelWriter('Heats.xlsx')
 Heats.to_excel(writer,'Heats')
+Overview.to_excel(writer,'Overview')
 
 #Overview.to_excel(writer,'Overview') #make overview Dataframe
 writer.save()
