@@ -13,6 +13,8 @@ frame = pd.DataFrame()
 Heats = pd.DataFrame()
 Overview = pd.DataFrame()
 list_ = []
+listkwh_  = []
+kwhTarget = 400
 
 for file_ in allFiles:
     df = pd.read_csv(file_) #index_col='Time', parse_dates=True
@@ -20,13 +22,18 @@ for file_ in allFiles:
     #with the correct Heat Number since there is a Bug in the Reporter with the Heat No.
     #during the conversion to CSV from RPH
     list_.append(df)
+    #this IF filters the dataframes and only those where the OperKwhPerTon max value is less or equal than kwhTarget, get appended to the list.
+    if df['OperKwhPerTon'].max() <= kwhTarget:
+        listkwh_.append(df)
+
 frame = pd.concat(list_, axis='rows')
+frameKwh = pd.concat(listkwh_,axis='rows') #this frame contains only heats where the final OperKwhPerTon is less than the kwhTarget value.
 
 
 #Calculated Variables
 #----------------------------------------------------------------------------------------------
 frame['O2scfCarbInjLb'] = frame['TotalO2Cns']/frame['AdditionsCarbInj']
-
+frameKwh['O2scfCarbInjLb'] = frameKwh['TotalO2Cns']/frameKwh['AdditionsCarbInj']
 
 
 
@@ -58,10 +65,7 @@ frameNoZeros = frame[frame['AvgCurrent']>5]  #Frame without zeros on current
 #----------------------------------------------------------------------------------------------
 HeatGroupNoZeros = frameNoZeros.groupby('HeatNumber0LSW') #This only to get the average current without zeros.
 HeatGroup = frame.groupby('HeatNumber0LSW')
-
-
-#if HeatGroup['OperKwhPerTon'].last() <= 400:
-#    GoodHeats = HeatGroup  this doesn't work..............
+GoodHeatsGroup = frameKwh.groupby('HeatNumber0LSW')
 
 
 for var in Columns_list:
@@ -202,14 +206,15 @@ Overview['TotalGasCns'] = Heats['TotalGasCns']
 Overview['TotalO2Cns'] = Heats['TotalO2Cns']
 Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
 
-
-
+#ListkWh = []
+#ListKwh = Heats['OperKwhPerTon'] <= 400
 
 
 plt.figure()
 #HeatGroup['O2scfCarbInjLb'].plot()
 plt.legend()
-HeatGroup['B1_O2MainFlow'].plot()
+GoodHeatsGroup['B1_O2MainFlow'].plot()
+#HeatGroup['B1_O2MainFlow'].plot()
 plt.show()
 
 
