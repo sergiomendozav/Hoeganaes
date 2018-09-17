@@ -10,6 +10,7 @@ import numpy as np
 path = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk'
 allFiles = glob.glob(path + "/*.csv")
 frame = pd.DataFrame()
+frameKwh = pd.DataFrame()
 Heats = pd.DataFrame()
 Overview = pd.DataFrame()
 list_ = []
@@ -27,7 +28,7 @@ for file_ in allFiles:
         listkwh_.append(df)
 
 frame = pd.concat(list_, axis='rows')
-frameKwh = pd.concat(listkwh_,axis='rows') #this frame contains only heats where the final OperKwhPerTon is less than the kwhTarget value.
+frameKwh = pd.concat(listkwh_, axis='rows') #this frame contains only heats where the final OperKwhPerTon is less than the kwhTarget value.
 
 
 #Calculated Variables
@@ -45,7 +46,7 @@ frameKwh['O2scfCarbInjLb'] = frameKwh['TotalO2Cns']/frameKwh['AdditionsCarbInj']
 #----------------------------------------------------------------------------------------------
 Columns_list = frame.columns.values.tolist() #this will bring the columns to a list
 
-List = [X for X in Columns_list if 'Flow' in X]
+List = [X for X in Columns_list if 'Charge' in X]
 del Columns_list[0]
 #----------------------------------------------------------------------------------------------
 
@@ -66,6 +67,7 @@ frameNoZeros = frame[frame['AvgCurrent']>5]  #Frame without zeros on current
 HeatGroupNoZeros = frameNoZeros.groupby('HeatNumber0LSW') #This only to get the average current without zeros.
 HeatGroup = frame.groupby('HeatNumber0LSW')
 GoodHeatsGroup = frameKwh.groupby('HeatNumber0LSW')
+GroupHeatCharge = frame.groupby(['HeatNumber0LSW','ChargeNumber'])
 
 
 for var in Columns_list:
@@ -210,15 +212,21 @@ Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
 #ListKwh = Heats['OperKwhPerTon'] <= 400
 
 
-plt.figure()
+#plt.figure()
 #HeatGroup['O2scfCarbInjLb'].plot()
-plt.legend()
-GoodHeatsGroup['B1_O2MainFlow'].plot()
+#plt.legend()
+#GoodHeatsGroup['B1_O2MainFlow'].plot()
 #HeatGroup['B1_O2MainFlow'].plot()
+#plt.show()
+
+
+GroupHeatCharge['MWH_PX3'].max()
+n, bins, patches = plt.hist(x = GroupHeatCharge['MWH_PX3'].max(),bins='auto', color='#0504aa', alpha=0.7, rwidth=0.85 )
+plt.grid(axis='y', alpha=0.75)
+plt.xlabel('MWH')
+plt.ylabel('Frequency')
+plt.title('MWH by Charge')
 plt.show()
-
-
-
 
 
 
