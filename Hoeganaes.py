@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 #from bokeh.plotting import figure, show, output_file
 
-path ='/home/sergiomendozav/Documents/Hoeganaes/EAF/Logs' #path on ubuntu at home
-#path = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk'
+#path ='/home/sergiomendozav/Documents/Hoeganaes/EAF/Logs' #path on ubuntu at home
+path = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk'
 allFiles = glob.glob(path + "/*.csv")
 frame = pd.DataFrame()
 frameKwh = pd.DataFrame()
@@ -34,6 +34,7 @@ frameKwh = pd.concat(listkwh_, axis='rows') #this frame contains only heats wher
 #Calculated Variables
 #----------------------------------------------------------------------------------------------
 frame['O2scfCarbInjLb'] = frame['TotalO2Cns']/frame['AdditionsCarbInj']
+frame['HeatNumber'] = frame['HeatNumber0LSW']
 frameKwh['O2scfCarbInjLb'] = frameKwh['TotalO2Cns']/frameKwh['AdditionsCarbInj']
 
 
@@ -46,7 +47,7 @@ frameKwh['O2scfCarbInjLb'] = frameKwh['TotalO2Cns']/frameKwh['AdditionsCarbInj']
 #----------------------------------------------------------------------------------------------
 Columns_list = frame.columns.values.tolist() #this will bring the columns to a list
 
-List = [X for X in Columns_list if 'Charge' in X]
+List = [X for X in Columns_list if 'Tap' in X]
 del Columns_list[0]
 #----------------------------------------------------------------------------------------------
 
@@ -188,6 +189,7 @@ Heats['Scrap10Wt'] = HeatGroup['Scrap10Wt'].last()
 Heats['O2scfCarbInjLb'] = HeatGroup['O2scfCarbInjLb'].last()
 
 Overview['PON'] = Heats['Ontime_PX3']
+Overview['T2T'] = Heats['TapTapTime']
 Overview['MWH'] = Heats['MWH_PX3']
 Overview['HeatkWhTon'] = Heats['OperKwhPerTon'] 
 Overview['I2H1'] = Heats['I2H1']
@@ -207,9 +209,16 @@ Overview['B3Lime'] = Heats['B3_LimeCns']
 Overview['TotalGasCns'] = Heats['TotalGasCns']
 Overview['TotalO2Cns'] = Heats['TotalO2Cns']
 Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
+Overview['O2scfCarbInjLb'] = Heats['O2scfCarbInjLb']
+Overview['HeatNumber'] = Heats['HeatNumber0LSW']
 
-#ListkWh = []
-#ListKwh = Heats['OperKwhPerTon'] <= 400
+OverviewShort = Overview[['PON','T2T','MWH','HeatkWhTon','HeatNumber']]
+OverviewMelted = pd.melt(OverviewShort,id_vars='HeatNumber',var_name='KPI')
+
+
+
+#Plotting
+#----------------------------------------------------------------------------------------------
 
 
 #plt.figure()
@@ -222,26 +231,72 @@ Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
 
 MWH1 = GroupHeatCharge['MWH_PX3'].max()
 MWH1 = MWH1.unstack()[1]  #this obtains the max MWH from charge 1 of the heats
-n, bins, patches = plt.hist(x = MWH1,bins='auto', color='#0504aa', alpha=0.7, rwidth=0.5 )
+n, bins, patches = plt.hist(x = MWH1,bins='auto', color='#0504aa', alpha=0.7, rwidth=0.85 )
 plt.grid(axis='y', alpha=0.75)
 plt.xlabel('MWH')
 plt.ylabel('Frequency')
 plt.title('MWH by Charge')
 plt.show()
 
+kwhTon1 = GroupHeatCharge['OperKwhPerTon'].max().unstack()[1]  #this gets OperKwhPerTon of 1st Charge only
+plt.hist(kwhTon1, bins=49 )   
+plt.xlabel('kWh/Ton')
+plt.ylabel('Frequency')
+plt.title('kWh/Ton 1st Charge')
+plt.show()
+
+#OverviewShort Pairplot
+#+++++++++++++++++++
+#sns.set()
+#sns.pairplot(OverviewShort)
+#plt.show()
+
+#T2T vs HeatkWhTon
+#+++++++++++++++++++
+#sns.lmplot(x='T2T',y='HeatkWhTon',data=Overview, fit_reg=False)
+#plt.ylim(300,500)
+#plt.xlim(25,125)
+#plt.show()
+
+#All Overview Boxplot
+#+++++++++++++++++++
+#sns.boxplot(data=Overview)
+#plt.show()
+
+#KPI swarmplot
+#+++++++++++++++++++
+#sns.swarmplot(x='KPI',y='value',data=OverviewMelted, hue='HeatNumber',split=True)
+#plt.legend(bbox_to_anchor=(1,1), loc=2)
+#plt.show()
+
+#T2T distplot
+#+++++++++++++++++++
+#sns.distplot(Overview.T2T)
+#plt.xlim(0,120)
+#plt.show()
+
+#Moka Injection Trend
+#+++++++++++++++++++
+#CarbonCnsMax = HeatGroup[['B1_CarbonCns','B2_CarbonCns']].max()
+#CarbonCnsMax.plot(style='.-')
+#plt.show()
 
 
-
+#Write to Excel
+#----------------------------------------------------------------------------------------------
 writer = pd.ExcelWriter('Heats.xlsx')
 Heats.to_excel(writer,'Heats')
 Overview.to_excel(writer,'Overview')
 writer.save()
 
+
+
+
+
+
 #Heats.loc[19096,:]  #returns all columns for that specific Heat
 
-#CarbonCnsMax = HeatGroup[['B1_CarbonCns','B2_CarbonCns']].max()
-#CarbonCnsMax.plot(style='.-')
-#plt.show()
+
 
 #HeatGroup.PrimaryVolts.mean().plot(style='.')
 #plt.show()
