@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 #from bokeh.plotting import figure, show, output_file
 
-#path ='/home/sergiomendozav/Documents/Hoeganaes/EAF/Logs' path on ubuntu at home
-path = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk'
+path ='/home/sergiomendozav/Documents/Hoeganaes/EAF/Logs' #path on ubuntu at home
+#path = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk'
 allFiles = glob.glob(path + "/*.csv")
 frame = pd.DataFrame()
 frameKwh = pd.DataFrame()
