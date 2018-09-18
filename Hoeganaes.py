@@ -222,7 +222,7 @@ Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
 
 MWH1 = GroupHeatCharge['MWH_PX3'].max()
 MWH1 = MWH1.unstack()[1]  #this obtains the max MWH from charge 1 of the heats
-n, bins, patches = plt.hist(x = MWH1,bins='auto', color='#0504aa', alpha=0.7, rwidth=0.85 )
+n, bins, patches = plt.hist(x = MWH1,bins='auto', color='#0504aa', alpha=0.7, rwidth=0.5 )
 plt.grid(axis='y', alpha=0.75)
 plt.xlabel('MWH')
 plt.ylabel('Frequency')
