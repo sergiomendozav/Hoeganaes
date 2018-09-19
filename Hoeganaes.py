@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 #from bokeh.plotting import figure, show, output_file
 
+
 #path ='/home/sergiomendozav/Documents/Hoeganaes/EAF/Logs' #path on ubuntu at home
-path = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk'
+path = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk/CurrentPeriod'
 allFiles = glob.glob(path + "/*.csv")
 frame = pd.DataFrame()
 frameKwh = pd.DataFrame()
@@ -47,7 +48,7 @@ frameKwh['O2scfCarbInjLb'] = frameKwh['TotalO2Cns']/frameKwh['AdditionsCarbInj']
 #----------------------------------------------------------------------------------------------
 Columns_list = frame.columns.values.tolist() #this will bring the columns to a list
 
-List = [X for X in Columns_list if 'Tap' in X]
+List = [X for X in Columns_list if 'SF' in X]
 del Columns_list[0]
 #----------------------------------------------------------------------------------------------
 
@@ -59,8 +60,19 @@ frameNoZeros = frame[frame['AvgCurrent']>5]  #Frame without zeros on current
 
 #Additional frames
 #----------------------------------------------------------------------------------------------
+#Stability Factor by TAP in SFTap dataframe
+df1 = pd.DataFrame()
+SFTap = pd.DataFrame()
+SFTapList = []
 
+for Tap in frame.ActFceTap_Px3.unique(): #this generates a For for Tap from 1 to 8
+    df1 = frame[['MeanSF1','MeanSF2','MeanSF3','ActFceTap_Px3']][frame.ActFceTap_Px3 == Tap]
+    SFTapList.append(df1)
 
+SFTap = pd.concat(SFTapList, axis='rows')
+SFTap = SFTap[SFTap.MeanSF1 < 300]
+SFTap = SFTap[SFTap.MeanSF2 < 300]
+SFTap = SFTap[SFTap.MeanSF3 < 300]
 #----------------------------------------------------------------------------------------------
 
 #HeatGroups
@@ -228,22 +240,32 @@ OverviewMelted = pd.melt(OverviewShort,id_vars='HeatNumber',var_name='KPI')
 #HeatGroup['B1_O2MainFlow'].plot()
 #plt.show()
 
-
+#MWH 1st Charge Histogram
+#+++++++++++++++++++
 MWH1 = GroupHeatCharge['MWH_PX3'].max()
 MWH1 = MWH1.unstack()[1]  #this obtains the max MWH from charge 1 of the heats
-n, bins, patches = plt.hist(x = MWH1,bins='auto', color='#0504aa', alpha=0.7, rwidth=0.85 )
-plt.grid(axis='y', alpha=0.75)
-plt.xlabel('MWH')
-plt.ylabel('Frequency')
-plt.title('MWH by Charge')
-plt.show()
+#n, bins, patches = plt.hist(x = MWH1,bins=20, color='#0504aa', alpha=0.7, rwidth=0.9 )
+#plt.grid(axis='y', alpha=0.75)
+#plt.xlabel('MWH')
+#plt.ylabel('Frequency')
+#plt.title('MWH 1st Charge')
+#plt.show()
 
-kwhTon1 = GroupHeatCharge['OperKwhPerTon'].max().unstack()[1]  #this gets OperKwhPerTon of 1st Charge only
-plt.hist(kwhTon1, bins=49 )   
-plt.xlabel('kWh/Ton')
-plt.ylabel('Frequency')
-plt.title('kWh/Ton 1st Charge')
-plt.show()
+#this is another option...
+#sns.distplot(MWH1)
+#plt.xlim(0,16)
+#plt.show()
+
+
+#kWh/Ton 1st Charge Histogram
+#+++++++++++++++++++
+#kwhTon1 = GroupHeatCharge['OperKwhPerTon'].max().unstack()[1]  #this gets OperKwhPerTon of 1st Charge only
+#plt.hist(kwhTon1, bins=49 )   
+#plt.xlabel('kWh/Ton')
+#plt.ylabel('Frequency')
+#plt.title('kWh/Ton 1st Charge')
+#plt.show()
+
 
 #OverviewShort Pairplot
 #+++++++++++++++++++
@@ -258,6 +280,12 @@ plt.show()
 #plt.xlim(25,125)
 #plt.show()
 
+#HeatAvgMW
+#+++++++++++++++++++
+#Heats.HeatAvgMW.plot()
+#plt.show()
+
+
 #All Overview Boxplot
 #+++++++++++++++++++
 #sns.boxplot(data=Overview)
@@ -265,9 +293,22 @@ plt.show()
 
 #KPI swarmplot
 #+++++++++++++++++++
-#sns.swarmplot(x='KPI',y='value',data=OverviewMelted, hue='HeatNumber',split=True)
+#sns.swarmplot(x='KPI',y='value',data=OverviewMelted, hue='HeatNumber',dodge=True)
 #plt.legend(bbox_to_anchor=(1,1), loc=2)
 #plt.show()
+
+
+#MeanSF Histograms
+#+++++++++++++++++++
+var1 = SFTap3df['MeanSF1']
+var2 = SFTap3df['MeanSF2']
+var3 = SFTap3df['MeanSF3']
+plt.hist([var1, var2, var3],bins = 10, rwidth = 0.85, alpha=0.5, label = ['MeanSF1','MeanSF2','MeanSF3'])
+plt.legend(loc='upper right')
+plt.title('AvgSF@Tap3')
+plt.show()
+
+
 
 #T2T distplot
 #+++++++++++++++++++
