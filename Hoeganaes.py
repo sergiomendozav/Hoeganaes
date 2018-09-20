@@ -4,10 +4,10 @@ import glob
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
-#from bokeh.plotting import figure, show, output_file
+# from bokeh.plotting import figure, show, output_file
 
 
-#path ='/home/sergiomendozav/Documents/Hoeganaes/EAF/Logs' #path on ubuntu at home
+# path ='/home/sergiomendozav/Documents/Hoeganaes/EAF/Logs' #path on ubuntu at home
 path = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk/CurrentPeriod'
 allFiles = glob.glob(path + "/*.csv")
 frame = pd.DataFrame()
@@ -32,8 +32,8 @@ frame = pd.concat(list_, axis='rows')
 frameKwh = pd.concat(listkwh_, axis='rows') #this frame contains only heats where the final OperKwhPerTon is less than the kwhTarget value.
 
 
-#Calculated Variables
-#----------------------------------------------------------------------------------------------
+# Calculated Variables
+# ----------------------------------------------------------------------------------------------
 frame['O2scfCarbInjLb'] = frame['TotalO2Cns']/frame['AdditionsCarbInj']
 frame['HeatNumber'] = frame['HeatNumber0LSW']
 frameKwh['O2scfCarbInjLb'] = frameKwh['TotalO2Cns']/frameKwh['AdditionsCarbInj']
@@ -41,42 +41,42 @@ frameKwh['O2scfCarbInjLb'] = frameKwh['TotalO2Cns']/frameKwh['AdditionsCarbInj']
 
 
 
-#----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 
 
-#Getting Column Names
-#----------------------------------------------------------------------------------------------
+# Getting Column Names
+# ----------------------------------------------------------------------------------------------
 Columns_list = frame.columns.values.tolist() #this will bring the columns to a list
 
 List = [X for X in Columns_list if 'SF' in X]
 del Columns_list[0]
-#----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 
-#Getting Real Average Current
-#----------------------------------------------------------------------------------------------
+# Getting Real Average Current
+# ----------------------------------------------------------------------------------------------
 frame['AvgCurrent'] = (frame.Current1 + frame.Current2 + frame.Current3)/3
 frameNoZeros = frame[frame['AvgCurrent']>5]  #Frame without zeros on current
-#----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 
-#Additional frames
-#----------------------------------------------------------------------------------------------
-#Stability Factor by TAP in SFTap dataframe
+# Additional frames
+# ----------------------------------------------------------------------------------------------
+# Stability Factor by TAP in SFTap dataframe
 df1 = pd.DataFrame()
 SFTap = pd.DataFrame()
 SFTapList = []
 
 for Tap in frame.ActFceTap_Px3.unique(): #this generates a For for Tap from 1 to 8
-    df1 = frame[['MeanSF1','MeanSF2','MeanSF3','ActFceTap_Px3']][frame.ActFceTap_Px3 == Tap]
+    df1 = frame[['MeanSF1','MeanSF2','MeanSF3','ActFceTap_Px3','OperKwhPerTon']][frame.ActFceTap_Px3 == Tap]
     SFTapList.append(df1)
 
 SFTap = pd.concat(SFTapList, axis='rows')
 SFTap = SFTap[SFTap.MeanSF1 < 300]
 SFTap = SFTap[SFTap.MeanSF2 < 300]
 SFTap = SFTap[SFTap.MeanSF3 < 300]
-#----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 
-#HeatGroups
-#----------------------------------------------------------------------------------------------
+# HeatGroups
+# ----------------------------------------------------------------------------------------------
 HeatGroupNoZeros = frameNoZeros.groupby('HeatNumber0LSW') #This only to get the average current without zeros.
 HeatGroup = frame.groupby('HeatNumber0LSW')
 GoodHeatsGroup = frameKwh.groupby('HeatNumber0LSW')
@@ -85,7 +85,7 @@ GroupHeatCharge = frame.groupby(['HeatNumber0LSW','ChargeNumber'])
 
 for var in Columns_list:
     Heats[var] = HeatGroup[var].mean()
-#----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 
 Heats['Current1'] = HeatGroupNoZeros['Current1'].mean()
 Heats['Current2'] = HeatGroupNoZeros['Current2'].mean()
@@ -229,102 +229,166 @@ OverviewMelted = pd.melt(OverviewShort,id_vars='HeatNumber',var_name='KPI')
 
 
 
-#Plotting
-#----------------------------------------------------------------------------------------------
+# Plotting
+# ----------------------------------------------------------------------------------------------
 
 
-#plt.figure()
-#HeatGroup['O2scfCarbInjLb'].plot()
-#plt.legend()
-#GoodHeatsGroup['B1_O2MainFlow'].plot()
-#HeatGroup['B1_O2MainFlow'].plot()
-#plt.show()
+# plt.figure()
+# HeatGroup['O2scfCarbInjLb'].plot()
+# plt.legend()
+# GoodHeatsGroup['B1_O2MainFlow'].plot()
+# HeatGroup['B1_O2MainFlow'].plot()
+# plt.show()
 
-#MWH 1st Charge Histogram
-#+++++++++++++++++++
+# MWH 1st Charge Histogram
+# +++++++++++++++++++
 MWH1 = GroupHeatCharge['MWH_PX3'].max()
 MWH1 = MWH1.unstack()[1]  #this obtains the max MWH from charge 1 of the heats
-#n, bins, patches = plt.hist(x = MWH1,bins=20, color='#0504aa', alpha=0.7, rwidth=0.9 )
-#plt.grid(axis='y', alpha=0.75)
-#plt.xlabel('MWH')
-#plt.ylabel('Frequency')
-#plt.title('MWH 1st Charge')
-#plt.show()
+# n, bins, patches = plt.hist(x = MWH1,bins=20, color='#0504aa', alpha=0.7, rwidth=0.9 )
+# plt.grid(axis='y', alpha=0.75)
+# plt.xlabel('MWH')
+# plt.ylabel('Frequency')
+# plt.title('MWH 1st Charge')
+# plt.show()
 
-#this is another option...
-#sns.distplot(MWH1)
-#plt.xlim(0,16)
-#plt.show()
-
-
-#kWh/Ton 1st Charge Histogram
-#+++++++++++++++++++
-#kwhTon1 = GroupHeatCharge['OperKwhPerTon'].max().unstack()[1]  #this gets OperKwhPerTon of 1st Charge only
-#plt.hist(kwhTon1, bins=49 )   
-#plt.xlabel('kWh/Ton')
-#plt.ylabel('Frequency')
-#plt.title('kWh/Ton 1st Charge')
-#plt.show()
+# this is another option...
+# sns.distplot(MWH1)
+# plt.xlim(0,16)
+# plt.show()
 
 
-#OverviewShort Pairplot
-#+++++++++++++++++++
-#sns.set()
-#sns.pairplot(OverviewShort)
-#plt.show()
-
-#T2T vs HeatkWhTon
-#+++++++++++++++++++
-#sns.lmplot(x='T2T',y='HeatkWhTon',data=Overview, fit_reg=False)
-#plt.ylim(300,500)
-#plt.xlim(25,125)
-#plt.show()
-
-#HeatAvgMW
-#+++++++++++++++++++
-#Heats.HeatAvgMW.plot()
-#plt.show()
+# kWh/Ton 1st Charge Histogram
+# +++++++++++++++++++
+# kwhTon1 = GroupHeatCharge['OperKwhPerTon'].max().unstack()[1]  #this gets OperKwhPerTon of 1st Charge only
+# plt.hist(kwhTon1, bins=49 )   
+# plt.xlabel('kWh/Ton')
+# plt.ylabel('Frequency')
+# plt.title('kWh/Ton 1st Charge')
+# plt.show()
 
 
-#All Overview Boxplot
-#+++++++++++++++++++
-#sns.boxplot(data=Overview)
-#plt.show()
+# OverviewShort Pairplot
+# +++++++++++++++++++
+# sns.set()
+# sns.pairplot(OverviewShort)
+# plt.show()
 
-#KPI swarmplot
-#+++++++++++++++++++
-#sns.swarmplot(x='KPI',y='value',data=OverviewMelted, hue='HeatNumber',dodge=True)
-#plt.legend(bbox_to_anchor=(1,1), loc=2)
-#plt.show()
+# T2T vs HeatkWhTon
+# +++++++++++++++++++
+# sns.lmplot(x='T2T',y='HeatkWhTon',data=Overview, fit_reg=False)
+# plt.ylim(300,500)
+# plt.xlim(25,125)
+# plt.show()
 
-
-#MeanSF Histograms
-#+++++++++++++++++++
-var1 = SFTap3df['MeanSF1']
-var2 = SFTap3df['MeanSF2']
-var3 = SFTap3df['MeanSF3']
-plt.hist([var1, var2, var3],bins = 10, rwidth = 0.85, alpha=0.5, label = ['MeanSF1','MeanSF2','MeanSF3'])
-plt.legend(loc='upper right')
-plt.title('AvgSF@Tap3')
-plt.show()
+# HeatAvgMW
+# +++++++++++++++++++
+# Heats.HeatAvgMW.plot()
+# plt.show()
 
 
+# All Overview Boxplot
+# +++++++++++++++++++
+# sns.boxplot(data=Overview)
+# plt.show()
 
-#T2T distplot
-#+++++++++++++++++++
-#sns.distplot(Overview.T2T)
-#plt.xlim(0,120)
-#plt.show()
-
-#Moka Injection Trend
-#+++++++++++++++++++
-#CarbonCnsMax = HeatGroup[['B1_CarbonCns','B2_CarbonCns']].max()
-#CarbonCnsMax.plot(style='.-')
-#plt.show()
+# KPI swarmplot
+# +++++++++++++++++++
+# sns.swarmplot(x='KPI',y='value',data=OverviewMelted, hue='HeatNumber',dodge=True)
+# plt.legend(bbox_to_anchor=(1,1), loc=2)
+# plt.show()
 
 
-#Write to Excel
-#----------------------------------------------------------------------------------------------
+# MeanSF Taps 3 to 6 Histograms
+# +++++++++++++++++++
+var13 = SFTap['MeanSF1'][SFTap.ActFceTap_Px3 == 3]
+var23 = SFTap['MeanSF2'][SFTap.ActFceTap_Px3 == 3]
+var33 = SFTap['MeanSF3'][SFTap.ActFceTap_Px3 == 3]
+var14 = SFTap['MeanSF1'][SFTap.ActFceTap_Px3 == 4]
+var24 = SFTap['MeanSF2'][SFTap.ActFceTap_Px3 == 4]
+var34 = SFTap['MeanSF3'][SFTap.ActFceTap_Px3 == 4]
+var15 = SFTap['MeanSF1'][SFTap.ActFceTap_Px3 == 5]
+var25 = SFTap['MeanSF2'][SFTap.ActFceTap_Px3 == 5]
+var35 = SFTap['MeanSF3'][SFTap.ActFceTap_Px3 == 5]
+var16 = SFTap['MeanSF1'][SFTap.ActFceTap_Px3 == 6]
+var26 = SFTap['MeanSF2'][SFTap.ActFceTap_Px3 == 6]
+var36 = SFTap['MeanSF3'][SFTap.ActFceTap_Px3 == 6]
+
+# plt.figure()
+# plt.subplot(221)
+# plt.hist([var13, var23, var33],bins = 10, rwidth = 0.85, alpha=0.5, label = ['SF1','SF2','SF3'])
+# plt.legend(loc='upper right')
+# plt.title('SF Tap 3')
+# plt.ylabel('Frequency')
+# plt.subplot(222)
+# plt.hist([var14, var24, var34],bins = 10, rwidth = 0.85, alpha=0.5, label = ['SF1','SF2','SF3'])
+# plt.title('SF Tap 4')
+# plt.ylabel('Frequency')
+# plt.legend(loc='upper right')
+# plt.subplot(223)
+# plt.hist([var15, var25, var35],bins = 10, rwidth = 0.85, alpha=0.5, label = ['SF1','SF2','SF3'])
+# plt.title('SF Tap 5')
+# plt.ylabel('Frequency')
+# plt.legend(loc='upper right')
+# plt.subplot(224)
+# plt.hist([var16, var26, var36],bins = 10, rwidth = 0.85, alpha=0.5, label = ['SF1','SF2','SF3'])
+# plt.title('SF Tap 6')
+# plt.ylabel('Frequency')
+# plt.legend(loc='upper right')
+# plt.show()
+
+
+# SF over OperKwhPerTon Tap 6
+# +++++++++++++++++++
+# +++++++++++++++++++
+# x = SFTap['OperKwhPerTon'][SFTap.ActFceTap_Px3 == 6]
+# y1 = SFTap['MeanSF1'][SFTap.ActFceTap_Px3 == 6]
+# y2 = SFTap['MeanSF2'][SFTap.ActFceTap_Px3 == 6]
+# y3 = SFTap['MeanSF3'][SFTap.ActFceTap_Px3 == 6]
+
+# plt.figure()
+
+# plt.subplot(131)
+# plt.scatter(x,y1,alpha=0.8, s=10)
+# plt.title('SF1 over OperKwhPerTon')
+# plt.xlabel('kWh/ton')
+# plt.ylabel('SF1')
+# plt.xlim(220,340)
+# plt.ylim(0,120)
+
+# plt.subplot(132)
+# plt.scatter(x,y2,alpha=0.8, s=10)
+# plt.title('SF2 over OperKwhPerTon')
+# plt.xlabel('kWh/ton')
+# plt.ylabel('SF2')
+# plt.xlim(220,340)
+# plt.ylim(0,120)
+
+# plt.subplot(133)
+# plt.scatter(x,y3,alpha=0.8, s=10)
+# plt.title('SF3 over OperKwhPerTon')
+# plt.xlabel('kWh/ton')
+# plt.ylabel('SF3')
+# plt.xlim(220,340)
+# plt.ylim(0,120)
+
+# plt.show()
+
+
+# T2T distplot
+# +++++++++++++++++++
+# sns.distplot(Overview.T2T)
+# plt.xlim(0,120)
+# plt.show()
+
+# Moka Injection Trend
+# +++++++++++++++++++
+# CarbonCnsMax = HeatGroup[['B1_CarbonCns','B2_CarbonCns']].max()
+# CarbonCnsMax.plot(style='.-')
+# plt.show()
+
+
+# Write to Excel
+# ----------------------------------------------------------------------------------------------
 writer = pd.ExcelWriter('Heats.xlsx')
 Heats.to_excel(writer,'Heats')
 Overview.to_excel(writer,'Overview')
@@ -335,16 +399,16 @@ writer.save()
 
 
 
-#Heats.loc[19096,:]  #returns all columns for that specific Heat
+# Heats.loc[19096,:]  #returns all columns for that specific Heat
 
 
 
-#HeatGroup.PrimaryVolts.mean().plot(style='.')
-#plt.show()
+# HeatGroup.PrimaryVolts.mean().plot(style='.')
+# plt.show()
 
 # toplot = frame['Current1'][frame['HeatNumber0LSW']==19096]  this way I can trend a specific variable of a specific heat
-#toplot = frame['Current1'][frame['HeatNumber0LSW']==19096]
-#toplot = frame['Current1'][frame['HeatNumber0LSW']==19096][500:1000] #to get specific time range from 600 to 1050
-#toplot.plot()
-#plt.show()
-#toplot.mean()
+# toplot = frame['Current1'][frame['HeatNumber0LSW']==19096]
+# toplot = frame['Current1'][frame['HeatNumber0LSW']==19096][500:1000] #to get specific time range from 600 to 1050
+# toplot.plot()
+# plt.show()
+# toplot.mean()
