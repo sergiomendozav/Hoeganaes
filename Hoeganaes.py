@@ -7,6 +7,9 @@ import numpy as np
 # from bokeh.plotting import figure, show, output_file
 
 
+# Reading files and getting Dataframes
+# ----------------------------------------------------------------------------------------------
+
 # path ='/home/sergiomendozav/Documents/Hoeganaes/EAF/Logs' #path on ubuntu at home
 path = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk/CurrentPeriod'
 allFiles = glob.glob(path + "/*.csv")
@@ -30,7 +33,10 @@ for file_ in allFiles:
 
 frame = pd.concat(list_, axis='rows')
 frameKwh = pd.concat(listkwh_, axis='rows') #this frame contains only heats where the final OperKwhPerTon is less than the kwhTarget value.
-
+GradeCrew = pd.DataFrame()
+GradeCrew = pd.read_csv('GradeCrew.csv')
+#merging dataframes
+frame = pd.merge(frame,GradeCrew, left_on='HeatNumber0LSW', right_on='HeatNo')
 
 # Calculated Variables
 # ----------------------------------------------------------------------------------------------
@@ -81,6 +87,7 @@ HeatGroupNoZeros = frameNoZeros.groupby('HeatNumber0LSW') #This only to get the 
 HeatGroup = frame.groupby('HeatNumber0LSW')
 GoodHeatsGroup = frameKwh.groupby('HeatNumber0LSW')
 GroupHeatCharge = frame.groupby(['HeatNumber0LSW','ChargeNumber'])
+GradeGroup = frame.groupby(['Grade','HeatNumber0LSW'])
 
 
 for var in Columns_list:
@@ -240,6 +247,7 @@ OverviewMelted = pd.melt(OverviewShort,id_vars='HeatNumber',var_name='KPI')
 # HeatGroup['B1_O2MainFlow'].plot()
 # plt.show()
 
+
 # MWH 1st Charge Histogram
 # +++++++++++++++++++
 MWH1 = GroupHeatCharge['MWH_PX3'].max()
@@ -259,12 +267,17 @@ MWH1 = MWH1.unstack()[1]  #this obtains the max MWH from charge 1 of the heats
 
 # kWh/Ton 1st Charge Histogram
 # +++++++++++++++++++
+# plt.figure()
 # kwhTon1 = GroupHeatCharge['OperKwhPerTon'].max().unstack()[1]  #this gets OperKwhPerTon of 1st Charge only
-# plt.hist(kwhTon1, bins=49 )   
+# k1 = kwhTon1 + 50  #this is just an example on how to make histograms overlap
+# plt.hist(kwhTon1, bins=49, alpha=0.5)   
+# plt.hist(k1, bins=49, alpha=0.5 )    #this is just an example on how to make histograms overlap
 # plt.xlabel('kWh/Ton')
 # plt.ylabel('Frequency')
 # plt.title('kWh/Ton 1st Charge')
+# plt.savefig('kwhTon1stCharge.png', bbox_inches='tight')
 # plt.show()
+
 
 
 # OverviewShort Pairplot
@@ -297,6 +310,33 @@ MWH1 = MWH1.unstack()[1]  #this obtains the max MWH from charge 1 of the heats
 # plt.legend(bbox_to_anchor=(1,1), loc=2)
 # plt.show()
 
+
+
+
+
+
+
+
+
+
+MWH1 = GroupHeatCharge['MWH_PX3'].max()
+MWH1 = MWH1.unstack()[1]  #this obtains the max MWH from charge 1 of the heats
+
+
+GradeList = GradeGroup.Ontime_PX3.max().unstack()
+
+GradeGroup.Ontime_PX3.max() #.reset_index()
+
+
+plt.figure()
+#x_pos = np.arange(len(GradeGroup.Grade.unique()))
+x_pos =np.arange(0,7)
+bars = GradeGroup.Ontime_PX3.max()
+plt.bar(x_pos, bars, align='center', alpha=0.5)
+plt.xticks(x_pos,GradeGroup.Grade.unique())
+plt.ylabel('minutes')
+plt.title('Power On Time per Grade')
+plt.show()
 
 # MeanSF Taps 3 to 6 Histograms
 # +++++++++++++++++++
@@ -340,10 +380,10 @@ var36 = SFTap['MeanSF3'][SFTap.ActFceTap_Px3 == 6]
 # SF over OperKwhPerTon Tap 6
 # +++++++++++++++++++
 # +++++++++++++++++++
-# x = SFTap['OperKwhPerTon'][SFTap.ActFceTap_Px3 == 6]
-# y1 = SFTap['MeanSF1'][SFTap.ActFceTap_Px3 == 6]
-# y2 = SFTap['MeanSF2'][SFTap.ActFceTap_Px3 == 6]
-# y3 = SFTap['MeanSF3'][SFTap.ActFceTap_Px3 == 6]
+x = SFTap['OperKwhPerTon'][SFTap.ActFceTap_Px3 == 6]
+y1 = SFTap['MeanSF1'][SFTap.ActFceTap_Px3 == 6]
+y2 = SFTap['MeanSF2'][SFTap.ActFceTap_Px3 == 6]
+y3 = SFTap['MeanSF3'][SFTap.ActFceTap_Px3 == 6]
 
 # plt.figure()
 
@@ -386,6 +426,27 @@ var36 = SFTap['MeanSF3'][SFTap.ActFceTap_Px3 == 6]
 # CarbonCnsMax.plot(style='.-')
 # plt.show()
 
+# Primary Volts Plot
+# +++++++++++++++++++
+# plt.figure()
+# plt.subplot(111)
+# plt.title('Primary Volts kV')
+# plt.ylabel('kV')
+# plt.ylim(13.0,15.0)
+# plt.plot(Heats.PrimVolts)
+# plt.show()
+
+# Power On Time Histogram
+# +++++++++++++++++++
+# plt.figure()
+# plt.subplot(111)
+# plt.title('Power On Time')
+# plt.ylabel('Frequency')
+# plt.xlabel('Minutes')
+# plt.plot(Heats.PON)
+# plt.show()
+
+
 
 # Write to Excel
 # ----------------------------------------------------------------------------------------------
@@ -400,7 +461,6 @@ writer.save()
 
 
 # Heats.loc[19096,:]  #returns all columns for that specific Heat
-
 
 
 # HeatGroup.PrimaryVolts.mean().plot(style='.')
