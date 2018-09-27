@@ -7,46 +7,44 @@ import numpy as np
 # from bokeh.plotting import figure, show, output_file
 
 
+
 # Reading files and getting Dataframes
 # ----------------------------------------------------------------------------------------------
 
-# path ='/home/sergiomendozav/Documents/Hoeganaes/EAF/Logs' #path on ubuntu at home
-path = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk/CurrentPeriod'
-allFiles = glob.glob(path + "/*.csv")
+# PathCurrentPeriod ='/home/sergiomendozav/Documents/Hoeganaes/EAF/Logs' #PathCurrentPeriod on ubuntu at home
+PathCurrentPeriod = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk/CurrentPeriod'
+allFiles = glob.glob(PathCurrentPeriod + "/*.csv")
 frame = pd.DataFrame()
-frameKwh = pd.DataFrame()
 Heats = pd.DataFrame()
 Overview = pd.DataFrame()
 list_ = []
-listkwh_  = []
-kwhTarget = 400
+
+# Instead of reading the files and then appending the dataframes into one single list. Try saving each dataframe
+# as a file, and then read them and concatenate them. 
 
 for file_ in allFiles:
     df = pd.read_csv(file_) #index_col='Time', parse_dates=True
-    df.HeatNumber0LSW = int(file_[-9:-4]) #This is to set the HeatNumber0LSW 
-    #with the correct Heat Number since there is a Bug in the Reporter with the Heat No.
-    #during the conversion to CSV from RPH
+    df.HeatNumber0LSW = int(file_[-9:-4]) #This is to set the HeatNumber0LSW with the correct Heat Number since there is a Bug in the Reporter with the Heat No. during the conversion to CSV from RPH
+    # df = df.loc[:, (df != 0).any(axis=0)] #remove all columns where data is always 0.
+    df = df[['Current1', 'Current2', 'Current3', 'Voltage1', 'Voltage2', 'Voltage3', 'MVA1', 'MVA2', 'MVA3', 'MW1','MW2', 'MW3', 'MVAR1', 'MVAR2', 'MVAR3', 'PF1', 'PF2', 'PF3', 'MVATot', 'MWTot', 'MVARTot', 'PFTot', 'ZFeedback1', 'ZFeedback2', 'ZFeedback3', 'Res1', 'Res2', 'Res3', 'Reactance1', 'Reactance2', 'Reactance3', 'ArcLength1', 'ArcLength2','ArcLength3', 'RWI1', 'RWI2', 'RWI3', 'NeutralCurrent', 'NeutralVolts', 'Normalized Neutral Current', 'Normalized Neutral Voltage','PrimaryVolts', 'VoltageLineToLine12', 'VoltageLineToLine23', 'VoltageLineToLine31', 'PhasorAngleV1I1', 'PhasorAngleV1I2', 'PhasorAngleV1I3', 'PhasorAngleV1V2', 'PhasorAngleV1V3', 'CurrentLoadPercent1', 'CurrentLoadPercent2', 'CurrentLoadPercent3','CurrentLoadPercentAvg', 'Y1', 'Y2', 'Y3', 'ArcResistance1', 'ArcResistance2', 'ArcResistance3', 'ArcEfficiency1', 'ArcEfficiency2', 'ArcEfficiency3', 'ExtinctionVoltage1', 'ExtinctionVoltage2', 'ExtinctionVoltage3', 'ReignitionVoltage1', 'ReignitionVoltage2', 'ReignitionVoltage3', 'ArcMeanPower1', 'ArcMeanPower2', 'ArcMeanPower3', 'ArcVoltage1', 'ArcVoltage2','ArcVoltage3', 'ActFceTap_Px3', 'ActReaTap_Px3', 'HeatNumber0LSW', 'ActualCHRG_PX3', 'ChargeWt1Tons', 'ChargeWt2Tons', 'ChargeWt3Tons', 'Ontime_PX3', 'OffTime_PX3', 'EPos1_PX3', 'EPos2_PX3', 'EPos3_PX3', 'MWH_PX3', 'ElectrodeSpeed1_PX3', 'ElectrodeSpeed2_PX3','ElectrodeSpeed3_PX3', 'RawElectrodePosition1', 'RawElectrodePosition2', 'RawElectrodePosition3','RegOut1', 'RegOut2', 'RegOut3', 'Sp1CurrentReg', 'ChargeNumber', 'Sp1Imped', 'Sp2Imped', 'Sp3Imped', 'CIcounter1', 'CIcounter2', 'CIcounter3', 'SF1', 'SF2', 'SF3', 'VoltSF1', 'VoltSF2', 'VoltSF3',  'MeanSF1','MeanSF2', 'MeanSF3', 'MeanVoltSF1', 'MeanVoltSF2', 'MeanVoltSF3','MeanCurrent1', 'MeanCurrent2', 'MeanCurrent3', 'MeanVoltage1', 'MeanVoltage2', 'MeanVoltage3', 'MeanMVA1','MeanMVA2', 'MeanMVA3', 'MeanMW1', 'MeanMW2', 'MeanMW3', 'MeanMVAR1', 'MeanMVAR2', 'MeanMVAR3', 'MeanPF1','MeanPF2', 'MeanPF3', 'MeanTotMVA', 'MeanTotMW', 'MeanTotMVAR', 'MeanTotPF', 'MeanZ1', 'MeanZ2', 'MeanZ3','MeanRes1', 'MeanRes2', 'MeanRes3', 'MeanReac1', 'MeanReac2', 'MeanReac3', 'MeanLng1', 'MeanLng2', 'MeanLng3','NeutralCurrentMean', 'NeutralVoltageMean', 'PrimaryVoltageMean',  'NeutralCurrentSdev', 'NeutralVoltageSdev','I2H1', 'I2H2', 'I2H3', 'TransformerTap', 'HeatMWHPLC', 'ChrgMWH', 'ChargeNumb', 'ChargeWt1', 'ChargeWt2', 'ChargeWt3','PwrOnTime', 'TapTapTime', 'I2T1', 'I2T2', 'I2T3',  'Ph1Pressure', 'Ph2Pressure', 'Ph3Pressure', 'TiltAngle', 'PanelTemp1A', 'PanelTemp2A', 'PanelTemp2B', 'PanelTemp3A', 'PanelTemp3C','PanelTemp4A', 'PanelTemp4C','PanelTemp5D1', 'PanelTemp5D2', 'PanelTemp7A', 'PanelTemp7E', 'PanelTemp8A', 'PanelTemp8B', 'PanelTemp9A', 'TempSumpN','TempSumpS', 'RoofInlet', 'RoofOutlet', 'TC1', 'TC2', 'TC3', 'TC4', 'TC5', 'CarbInject', 'NScavenger', 'SScavenger','MainDamperPos', 'SuperBagSmpPos', 'DropBoxPsi', 'CurrentRef','ChargeWt', 'HeatWt',  'ScrapPercWt', 'HeatKWHperTon', 'PowerOnTime', 'ChargeKWHperTon', 'OperKwhPerTon','AvgSF', 'AvgCurent', 'HeatAvgMW', 'HeatI2HperMWH', 'HeatAvgI2H', 'ChargeAvgMW', 'ChrgI2HperMWH', 'ChrgAvgI2H','TotMeanMw',  'ValidTempSample', 'ValidPPMSample', 'ValidCarbonSample',  'Elec1PosFromTop', 'Elec2PosFromTop','Elec3PosFromTop','SetPointPX3','Charge_Carb', 'TotScrapWt','TempEstim', 'PPMEstim', 'CarbEstim', 'B1_GasFlow', 'B1_O2MainFlow', 'B1_CarbonFlow', 'B2_GasFlow', 'B2_O2MainFlow', 'B2_CarbonFlow', 'B3_GasFlow', 'B3_O2MainFlow', 'B3_LimeFlow', 'B1_GasRef', 'B1_O2MainRef', 'B1_CarbonRef', 'B2_GasRef', 'B2_O2MainRef', 'B2_CarbonRef', 'B3_GasRef', 'B3_O2MainRef', 'B1_GasCns', 'B1_O2MainCns','B1_CarbonCns', 'B2_GasCns', 'B2_O2MainCns', 'B2_CarbonCns', 'B3_GasCns', 'B3_O2MainCns', 'B3_LimeCns', 'TotalGasCns','TotalO2Cns', 'TotalCarbonCns', 'AdditionsCarbCharg', 'AdditionsLimeInj', 'AdditionsCarbInj', 'Scrap1Wt','Scrap2Wt', 'Scrap3Wt', 'Scrap4Wt', 'Scrap5Wt', 'Scrap7Wt',  'TempSample', 'PPMSample', 'CarbSample', 'PPMestim', 'AimPPM',  'TotalCarbInjRef', 'TotalO2Flow', 'TotCarbonInjFlow', 'SP_B1_NG', 'SP_B2_NG', 'SP_B3_NG', 'SP_B1_MainO2', 'SP_B2_MainO2', 'SP_B3_MainO2', 'SP_Inj1_C', 'SP_Inj2_C','M3PpmEstimAtSample','M3PpmSample', 'M3TempAtSample']]
     list_.append(df)
-    #this IF filters the dataframes and only those where the OperKwhPerTon max value is less or equal than kwhTarget, get appended to the list.
-    if df['OperKwhPerTon'].max() <= kwhTarget:
-        listkwh_.append(df)
+    
+
 
 frame = pd.concat(list_, axis='rows')
-frameKwh = pd.concat(listkwh_, axis='rows') #this frame contains only heats where the final OperKwhPerTon is less than the kwhTarget value.
+
+
 GradeCrew = pd.DataFrame()
-GradeCrew = pd.read_csv('GradeCrew.csv')
-#merging dataframes
-frame = pd.merge(frame,GradeCrew, left_on='HeatNumber0LSW', right_on='HeatNo')
+GradeCrew = pd.read_csv('/home/sergio/Documents/Hoeganaes/EAF/Logs/Hoeganaes/GradeCrew.csv')
+
+
+# #merging dataframes
+frame = pd.merge(frame,GradeCrew, how='left', left_on='HeatNumber0LSW', right_on='HeatNo')
 
 # Calculated Variables
 # ----------------------------------------------------------------------------------------------
 frame['O2scfCarbInjLb'] = frame['TotalO2Cns']/frame['AdditionsCarbInj']
 frame['HeatNumber'] = frame['HeatNumber0LSW']
-frameKwh['O2scfCarbInjLb'] = frameKwh['TotalO2Cns']/frameKwh['AdditionsCarbInj']
-
-
-
-
 # ----------------------------------------------------------------------------------------------
 
 
@@ -54,8 +52,13 @@ frameKwh['O2scfCarbInjLb'] = frameKwh['TotalO2Cns']/frameKwh['AdditionsCarbInj']
 # ----------------------------------------------------------------------------------------------
 Columns_list = frame.columns.values.tolist() #this will bring the columns to a list
 
-List = [X for X in Columns_list if 'SF' in X]
-del Columns_list[0]
+# List = [X for X in Columns_list if 'SF' in X] used to look up the Column_list list
+aggColumnList = Columns_list
+# Remove non numerical columns
+aggColumnList.remove('Crew')
+aggColumnList.remove('Grade')
+aggColumnList.remove('StartDate')
+
 # ----------------------------------------------------------------------------------------------
 
 # Getting Real Average Current
@@ -85,15 +88,23 @@ SFTap = SFTap[SFTap.MeanSF3 < 300]
 # ----------------------------------------------------------------------------------------------
 HeatGroupNoZeros = frameNoZeros.groupby('HeatNumber0LSW') #This only to get the average current without zeros.
 HeatGroup = frame.groupby('HeatNumber0LSW')
-GoodHeatsGroup = frameKwh.groupby('HeatNumber0LSW')
 GroupHeatCharge = frame.groupby(['HeatNumber0LSW','ChargeNumber'])
 GradeGroup = frame.groupby(['Grade','HeatNumber0LSW'])
+GradeHeatChargeGroup = frame.groupby(['Grade','HeatNumber0LSW','ChargeNumber'])
 
+###################################################
+## How to take a look at a Groupby               ##
+## for key, item in HeatGroup:                   ##
+##     print(HeatGroup.get_group(key), "\n\n")   ##
+###################################################
 
-for var in Columns_list:
+for var in aggColumnList:
     Heats[var] = HeatGroup[var].mean()
+
 # ----------------------------------------------------------------------------------------------
 
+# Getting the last value of some variables for Heat and Overview Groups
+# ----------------------------------------------------------------------------------------------
 Heats['Current1'] = HeatGroupNoZeros['Current1'].mean()
 Heats['Current2'] = HeatGroupNoZeros['Current2'].mean()
 Heats['Current3'] = HeatGroupNoZeros['Current3'].mean()
@@ -101,48 +112,18 @@ Heats['ZFeedback1'] = HeatGroupNoZeros['ZFeedback1'].mean()
 Heats['ZFeedback2'] = HeatGroupNoZeros['ZFeedback2'].mean()
 Heats['ZFeedback3'] = HeatGroupNoZeros['ZFeedback3'].mean()
 
-Heats['HeatNumber3MSW'] = HeatGroup['HeatNumber3MSW'].last()
-Heats['HeatNumber2'] = HeatGroup['HeatNumber2'].last()
-Heats['HeatNumber1'] = HeatGroup['HeatNumber1'].last()
 Heats['HeatNumber0LSW'] = HeatGroup['HeatNumber0LSW'].last()
 Heats['ActualCHRG_PX3'] = HeatGroup['ActualCHRG_PX3'].last()
 Heats['ChargeWt1Tons'] = HeatGroup['ChargeWt1Tons'].last()
 Heats['ChargeWt2Tons'] = HeatGroup['ChargeWt2Tons'].last()
 Heats['ChargeWt3Tons'] = HeatGroup['ChargeWt3Tons'].last()
-Heats['ChargeWt4Tons'] = HeatGroup['ChargeWt4Tons'].last()
-Heats['ChargeWt5Tons'] = HeatGroup['ChargeWt5Tons'].last()
-Heats['ChargeWt6Tons'] = HeatGroup['ChargeWt6Tons'].last()
-Heats['ChargeWt7Tons'] = HeatGroup['ChargeWt7Tons'].last()
-Heats['ChargeWt8Tons'] = HeatGroup['ChargeWt8Tons'].last()
-Heats['ChargeWt9Tons'] = HeatGroup['ChargeWt9Tons'].last()
-Heats['ChargeWt10Tons'] = HeatGroup['ChargeWt10Tons'].last()
-Heats['ChargeWt11Tons'] = HeatGroup['ChargeWt11Tons'].last()
-Heats['ChargeWt12Tons'] = HeatGroup['ChargeWt12Tons'].last()
-Heats['PwrProgNumberOV'] = HeatGroup['PwrProgNumberOV'].last()
-Heats['SmartArcNumberOV'] = HeatGroup['SmartArcNumberOV'].last()
 Heats['Ontime_PX3'] = HeatGroup['Ontime_PX3'].last()
 Heats['OffTime_PX3'] = HeatGroup['OffTime_PX3'].last()
 Heats['MWH_PX3'] = HeatGroup['MWH_PX3'].last()
-Heats['ChargeMWH_PX3'] = HeatGroup['ChargeMWH_PX3'].last()
-Heats['PwrPrgNum'] = HeatGroup['PwrPrgNum'].last()
-Heats['NCCcounter1'] = HeatGroup['NCCcounter1'].last()
-Heats['NCCcounter2'] = HeatGroup['NCCcounter2'].last()
-Heats['NCCcounter3'] = HeatGroup['NCCcounter3'].last()
-Heats['CIcounter1'] = HeatGroup['CIcounter1'].last()
-Heats['CIcounter2'] = HeatGroup['CIcounter2'].last()
-Heats['CIcounter3'] = HeatGroup['CIcounter3'].last()
+
 Heats['I2H1'] = HeatGroup['I2H1'].last()                   
 Heats['I2H2'] = HeatGroup['I2H2'].last()
 Heats['I2H3'] = HeatGroup['I2H3'].last()
-Heats['ChargeI2H1'] = HeatGroup['ChargeI2H1'].last()
-Heats['ChargeI2H2'] = HeatGroup['ChargeI2H2'].last()
-Heats['ChargeI2H3'] = HeatGroup['ChargeI2H3'].last()
-Heats['HeatRWI1'] = HeatGroup['HeatRWI1'].last()                   
-Heats['HeatRWI2'] = HeatGroup['HeatRWI2'].last()
-Heats['HeatRWI3'] = HeatGroup['HeatRWI3'].last()
-Heats['ChargeRWI1'] = HeatGroup['ChargeRWI1'].last()
-Heats['ChargeRWI2'] = HeatGroup['ChargeRWI2'].last()
-Heats['ChargeRWI3'] = HeatGroup['ChargeRWI3'].last()
 Heats['TransformerTap'] = HeatGroup['TransformerTap'].max()
 Heats['HeatMWHPLC'] = HeatGroup['HeatMWHPLC'].last()
 Heats['ChrgMWH'] = HeatGroup['ChrgMWH'].last()
@@ -150,15 +131,12 @@ Heats['ChargeNumb'] = HeatGroup['ChargeNumb'].last()
 Heats['ChargeWt1'] = HeatGroup['ChargeWt1'].last()
 Heats['ChargeWt2'] = HeatGroup['ChargeWt2'].last()
 Heats['ChargeWt3'] = HeatGroup['ChargeWt3'].last()
-Heats['ChargeWt4'] = HeatGroup['ChargeWt4'].last()
-Heats['ChargeWt5'] = HeatGroup['ChargeWt5'].last()
 Heats['PwrOnTime'] = HeatGroup['PwrOnTime'].last()
 Heats['TapTapTime'] = HeatGroup['TapTapTime'].last()
 Heats['I2T1'] = HeatGroup['I2T1'].last()
 Heats['I2T2'] = HeatGroup['I2T2'].last()
 Heats['I2T3'] = HeatGroup['I2T3'].last()
 Heats['CarbInject'] = HeatGroup['CarbInject'].last()
-Heats['MasterProgramLog'] = HeatGroup['MasterProgramLog'].last()
 Heats['HeatWt'] = HeatGroup['HeatWt'].last()
 Heats['HeatKWHperTon'] = HeatGroup['HeatKWHperTon'].last()
 Heats['ChargeKWHperTon'] = HeatGroup['ChargeKWHperTon'].last()
@@ -169,16 +147,9 @@ Heats['HeatAvgI2H'] = HeatGroup['HeatAvgI2H'].last()
 Heats['ChargeAvgMW'] = HeatGroup['ChargeAvgMW'].last()                
 Heats['ChrgI2HperMWH'] = HeatGroup['ChrgI2HperMWH'].last()
 Heats['ChrgAvgI2H'] = HeatGroup['ChrgAvgI2H'].last()
-Heats['PowerProg'] = HeatGroup['PowerProg'].last()
-Heats['BalanceProg'] = HeatGroup['BalanceProg'].last()
-Heats['BackChrgProg'] = HeatGroup['BackChrgProg'].last()
-Heats['BurnerProg'] = HeatGroup['BurnerProg'].last()              #should be oxiprofile
 Heats['ValidTempSample'] = HeatGroup['ValidTempSample'].last()      
 Heats['ValidPPMSample'] = HeatGroup['ValidPPMSample'].last()
 Heats['ValidCarbonSample'] = HeatGroup['ValidCarbonSample'].last()
-Heats['ValidNewSample'] = HeatGroup['ValidNewSample'].last()
-Heats['LimeCharged'] = HeatGroup['LimeCharged'].last()
-Heats['Tot_LimeInj'] = HeatGroup['Tot_LimeInj'].last()
 Heats['Charge_Carb'] = HeatGroup['Charge_Carb'].last()
 Heats['B1_GasCns'] = HeatGroup['B1_GasCns'].last()
 Heats['B1_O2MainCns'] = HeatGroup['B1_O2MainCns'].last()
@@ -191,7 +162,6 @@ Heats['B3_O2MainCns'] = HeatGroup['B3_O2MainCns'].last()
 Heats['B3_LimeCns'] = HeatGroup['B3_LimeCns'].last()
 Heats['TotalGasCns'] = HeatGroup['TotalGasCns'].last()
 Heats['TotalO2Cns'] = HeatGroup['TotalO2Cns'].last()
-Heats['AdditionsLimeCharge'] = HeatGroup['AdditionsLimeCharge'].last()
 Heats['AdditionsCarbCharg'] = HeatGroup['AdditionsCarbCharg'].last()
 Heats['AdditionsLimeInj'] = HeatGroup['AdditionsLimeInj'].last()
 Heats['AdditionsCarbInj'] = HeatGroup['AdditionsCarbInj'].last()
@@ -202,9 +172,6 @@ Heats['Scrap4Wt'] = HeatGroup['Scrap4Wt'].last()
 Heats['Scrap5Wt'] = HeatGroup['Scrap5Wt'].last()
 Heats['Scrap6Wt'] = HeatGroup['Scrap6Wt'].last()
 Heats['Scrap7Wt'] = HeatGroup['Scrap7Wt'].last()
-Heats['Scrap8Wt'] = HeatGroup['Scrap8Wt'].last()
-Heats['Scrap9Wt'] = HeatGroup['Scrap9Wt'].last()
-Heats['Scrap10Wt'] = HeatGroup['Scrap10Wt'].last()
 Heats['O2scfCarbInjLb'] = HeatGroup['O2scfCarbInjLb'].last()
 
 Overview['PON'] = Heats['Ontime_PX3']
@@ -231,6 +198,11 @@ Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
 Overview['O2scfCarbInjLb'] = Heats['O2scfCarbInjLb']
 Overview['HeatNumber'] = Heats['HeatNumber0LSW']
 
+
+# ----------------------------------------------------------------------------------------------
+
+# Some other variables for plots
+# ----------------------------------------------------------------------------------------------
 OverviewShort = Overview[['PON','T2T','MWH','HeatkWhTon','HeatNumber']]
 OverviewMelted = pd.melt(OverviewShort,id_vars='HeatNumber',var_name='KPI')
 
@@ -252,12 +224,30 @@ OverviewMelted = pd.melt(OverviewShort,id_vars='HeatNumber',var_name='KPI')
 # +++++++++++++++++++
 MWH1 = GroupHeatCharge['MWH_PX3'].max()
 MWH1 = MWH1.unstack()[1]  #this obtains the max MWH from charge 1 of the heats
-# n, bins, patches = plt.hist(x = MWH1,bins=20, color='#0504aa', alpha=0.7, rwidth=0.9 )
-# plt.grid(axis='y', alpha=0.75)
-# plt.xlabel('MWH')
-# plt.ylabel('Frequency')
-# plt.title('MWH 1st Charge')
-# plt.show()
+n, bins, patches = plt.hist(x = MWH1,bins=20, color='#0504aa', alpha=0.7, rwidth=0.9 )
+plt.grid(axis='y', alpha=0.75)
+plt.xlabel('MWH')
+plt.ylabel('Frequency')
+plt.title('MWH 1st Charge')
+plt.savefig('MWH1stChargeHistogram.png', bbox_inches='tight')
+#plt.show()
+
+
+plt.figure()
+#x_pos = np.arange(len(GradeGroup.Grade.unique()))
+x_pos =np.arange(len(MWH1))
+bars = MWH1
+plt.bar(x_pos, bars, align='center', alpha=0.5)
+plt.xticks(x_pos,GroupHeatCharge.HeatNo.max().unstack()[1])
+plt.ylabel('MWH')
+plt.xlabel('Heat Number')
+plt.xticks(rotation=90)
+plt.ylim(5,12)
+plt.title('MWH 1st Bucket')
+plt.grid()
+plt.savefig('MWH1stChargePlot.png', bbox_inches='tight')
+#plt.show()    
+
 
 # this is another option...
 # sns.distplot(MWH1)
@@ -267,18 +257,39 @@ MWH1 = MWH1.unstack()[1]  #this obtains the max MWH from charge 1 of the heats
 
 # kWh/Ton 1st Charge Histogram
 # +++++++++++++++++++
-# plt.figure()
-# kwhTon1 = GroupHeatCharge['OperKwhPerTon'].max().unstack()[1]  #this gets OperKwhPerTon of 1st Charge only
-# k1 = kwhTon1 + 50  #this is just an example on how to make histograms overlap
-# plt.hist(kwhTon1, bins=49, alpha=0.5)   
-# plt.hist(k1, bins=49, alpha=0.5 )    #this is just an example on how to make histograms overlap
-# plt.xlabel('kWh/Ton')
-# plt.ylabel('Frequency')
-# plt.title('kWh/Ton 1st Charge')
-# plt.savefig('kwhTon1stCharge.png', bbox_inches='tight')
-# plt.show()
+plt.figure()
+kwhTon1 = GroupHeatCharge['OperKwhPerTon'].max().unstack()[1]  #this gets OperKwhPerTon of 1st Charge only
+#k1 = kwhTon1 + 50  #this is just an example on how to make histograms overlap
+plt.hist(kwhTon1, bins=49, alpha=0.5)   
+#plt.hist(k1, bins=49, alpha=0.5 )    #this is just an example on how to make histograms overlap
+plt.xlabel('kWh/Ton')
+plt.ylabel('Frequency')
+plt.title('kWh/Ton 1st Charge')
+plt.savefig('kwhTon1stCharge.png', bbox_inches='tight')
+#plt.show()
 
 
+MWHChargePerGrade = GradeHeatChargeGroup.MWH_PX3.max().unstack()[1]
+Grades = frame.Grade.unique()
+plt.figure(1)
+#r = np.arange(len(Grades)) + 1 #in order to avoid index 0
+index = 1
+for grd in Grades:
+    plt.subplot(4,5,index)
+    plt.hist(MWHChargePerGrade[grd], bins='auto', alpha=0.5, label=grd)
+    index = index +1
+    plt.legend()
+    plt.grid(alpha=0.5)
+    plt.xlabel('MWH')
+    plt.ylabel('Heats')
+    plt.xlim(4,12)
+    plt.ylim(0,30)
+#plt.savefig('MWH1stChargebyGrade.png', bbox_inches='tight')
+plt.show()
+
+#plt.figure(2)
+#pos = 1
+#plt.subplot(4,5,pos)
 
 # OverviewShort Pairplot
 # +++++++++++++++++++
@@ -313,30 +324,37 @@ MWH1 = MWH1.unstack()[1]  #this obtains the max MWH from charge 1 of the heats
 
 
 
+# GradeList = GradeGroup.Ontime_PX3.max().unstack()     not used
+
+# Average Power On Time by Grade
+PONperGrade = GradeGroup.Ontime_PX3.max().mean(level=0) 
+
+# Amount of Heats per Grade
+GradeCount = GradeGroup.HeatNumber.max().count(level=0)
+
+#print(PONperGrade,GradeCount)
+
+# plt.figure()
+# #x_pos = np.arange(len(GradeGroup.Grade.unique()))
+# x_pos =np.arange(0,7)
+# bars = PONperGrade
+# plt.bar(x_pos, bars, align='center', alpha=0.5)
+# plt.xticks(x_pos,GradeGroup.Grade.unique())
+# plt.ylabel('minutes')
+# plt.title('Power On Time per Grade')
+# plt.show()
 
 
 
 
 
 
-MWH1 = GroupHeatCharge['MWH_PX3'].max()
-MWH1 = MWH1.unstack()[1]  #this obtains the max MWH from charge 1 of the heats
 
 
-GradeList = GradeGroup.Ontime_PX3.max().unstack()
-
-GradeGroup.Ontime_PX3.max() #.reset_index()
 
 
-plt.figure()
-#x_pos = np.arange(len(GradeGroup.Grade.unique()))
-x_pos =np.arange(0,7)
-bars = GradeGroup.Ontime_PX3.max()
-plt.bar(x_pos, bars, align='center', alpha=0.5)
-plt.xticks(x_pos,GradeGroup.Grade.unique())
-plt.ylabel('minutes')
-plt.title('Power On Time per Grade')
-plt.show()
+
+
 
 # MeanSF Taps 3 to 6 Histograms
 # +++++++++++++++++++
