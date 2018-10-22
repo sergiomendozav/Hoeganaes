@@ -4,32 +4,29 @@ import glob
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
-# from bokeh.plotting import figure, show, output_file
-
+from bokeh.plotting import figure, show, output_file
+from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes 
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
 
 # Reading files and getting Dataframes
 # ----------------------------------------------------------------------------------------------
 
-# PathCurrentPeriod ='/home/sergiomendozav/Documents/Hoeganaes/EAF/Logs' #PathCurrentPeriod on ubuntu at home
 PathCurrentPeriod = '/home/sergio/Documents/Hoeganaes/EAF/Logs/LogsOk/CurrentPeriod'
 allFiles = glob.glob(PathCurrentPeriod + "/*.csv")
 frame = pd.DataFrame()
 Heats = pd.DataFrame()
 Overview = pd.DataFrame()
 list_ = []
-
-# Instead of reading the files and then appending the dataframes into one single list. Try saving each dataframe
-# as a file, and then read them and concatenate them. 
-
+ 
 for file_ in allFiles:
     df = pd.read_csv(file_) #index_col='Time', parse_dates=True
     df.HeatNumber0LSW = int(file_[-9:-4]) #This is to set the HeatNumber0LSW with the correct Heat Number since there is a Bug in the Reporter with the Heat No. during the conversion to CSV from RPH
     # df = df.loc[:, (df != 0).any(axis=0)] #remove all columns where data is always 0.
-    df = df[['Current1', 'Current2', 'Current3', 'Voltage1', 'Voltage2', 'Voltage3', 'MVA1', 'MVA2', 'MVA3', 'MW1','MW2', 'MW3', 'MVAR1', 'MVAR2', 'MVAR3', 'PF1', 'PF2', 'PF3', 'MVATot', 'MWTot', 'MVARTot', 'PFTot', 'ZFeedback1', 'ZFeedback2', 'ZFeedback3', 'Res1', 'Res2', 'Res3', 'Reactance1', 'Reactance2', 'Reactance3', 'ArcLength1', 'ArcLength2','ArcLength3', 'RWI1', 'RWI2', 'RWI3', 'NeutralCurrent', 'NeutralVolts', 'Normalized Neutral Current', 'Normalized Neutral Voltage','PrimaryVolts', 'VoltageLineToLine12', 'VoltageLineToLine23', 'VoltageLineToLine31', 'PhasorAngleV1I1', 'PhasorAngleV1I2', 'PhasorAngleV1I3', 'PhasorAngleV1V2', 'PhasorAngleV1V3', 'CurrentLoadPercent1', 'CurrentLoadPercent2', 'CurrentLoadPercent3','CurrentLoadPercentAvg', 'Y1', 'Y2', 'Y3', 'ArcResistance1', 'ArcResistance2', 'ArcResistance3', 'ArcEfficiency1', 'ArcEfficiency2', 'ArcEfficiency3', 'ExtinctionVoltage1', 'ExtinctionVoltage2', 'ExtinctionVoltage3', 'ReignitionVoltage1', 'ReignitionVoltage2', 'ReignitionVoltage3', 'ArcMeanPower1', 'ArcMeanPower2', 'ArcMeanPower3', 'ArcVoltage1', 'ArcVoltage2','ArcVoltage3', 'ActFceTap_Px3', 'ActReaTap_Px3', 'HeatNumber0LSW', 'ActualCHRG_PX3', 'ChargeWt1Tons', 'ChargeWt2Tons', 'ChargeWt3Tons', 'Ontime_PX3', 'OffTime_PX3', 'EPos1_PX3', 'EPos2_PX3', 'EPos3_PX3', 'MWH_PX3', 'ElectrodeSpeed1_PX3', 'ElectrodeSpeed2_PX3','ElectrodeSpeed3_PX3', 'RawElectrodePosition1', 'RawElectrodePosition2', 'RawElectrodePosition3','RegOut1', 'RegOut2', 'RegOut3', 'Sp1CurrentReg', 'ChargeNumber', 'Sp1Imped', 'Sp2Imped', 'Sp3Imped', 'CIcounter1', 'CIcounter2', 'CIcounter3', 'SF1', 'SF2', 'SF3', 'VoltSF1', 'VoltSF2', 'VoltSF3',  'MeanSF1','MeanSF2', 'MeanSF3', 'MeanVoltSF1', 'MeanVoltSF2', 'MeanVoltSF3','MeanCurrent1', 'MeanCurrent2', 'MeanCurrent3', 'MeanVoltage1', 'MeanVoltage2', 'MeanVoltage3', 'MeanMVA1','MeanMVA2', 'MeanMVA3', 'MeanMW1', 'MeanMW2', 'MeanMW3', 'MeanMVAR1', 'MeanMVAR2', 'MeanMVAR3', 'MeanPF1','MeanPF2', 'MeanPF3', 'MeanTotMVA', 'MeanTotMW', 'MeanTotMVAR', 'MeanTotPF', 'MeanZ1', 'MeanZ2', 'MeanZ3','MeanRes1', 'MeanRes2', 'MeanRes3', 'MeanReac1', 'MeanReac2', 'MeanReac3', 'MeanLng1', 'MeanLng2', 'MeanLng3','NeutralCurrentMean', 'NeutralVoltageMean', 'PrimaryVoltageMean',  'NeutralCurrentSdev', 'NeutralVoltageSdev','I2H1', 'I2H2', 'I2H3', 'TransformerTap', 'HeatMWHPLC', 'ChrgMWH', 'ChargeNumb', 'ChargeWt1', 'ChargeWt2', 'ChargeWt3','PwrOnTime', 'TapTapTime', 'I2T1', 'I2T2', 'I2T3',  'Ph1Pressure', 'Ph2Pressure', 'Ph3Pressure', 'TiltAngle', 'PanelTemp1A', 'PanelTemp2A', 'PanelTemp2B', 'PanelTemp3A', 'PanelTemp3C','PanelTemp4A', 'PanelTemp4C','PanelTemp5D1', 'PanelTemp5D2', 'PanelTemp7A', 'PanelTemp7E', 'PanelTemp8A', 'PanelTemp8B', 'PanelTemp9A', 'TempSumpN','TempSumpS', 'RoofInlet', 'RoofOutlet', 'TC1', 'TC2', 'TC3', 'TC4', 'TC5', 'CarbInject', 'NScavenger', 'SScavenger','MainDamperPos', 'SuperBagSmpPos', 'DropBoxPsi', 'CurrentRef','ChargeWt', 'HeatWt',  'ScrapPercWt', 'HeatKWHperTon', 'PowerOnTime', 'ChargeKWHperTon', 'OperKwhPerTon','AvgSF', 'AvgCurent', 'HeatAvgMW', 'HeatI2HperMWH', 'HeatAvgI2H', 'ChargeAvgMW', 'ChrgI2HperMWH', 'ChrgAvgI2H','TotMeanMw',  'ValidTempSample', 'ValidPPMSample', 'ValidCarbonSample',  'Elec1PosFromTop', 'Elec2PosFromTop','Elec3PosFromTop','SetPointPX3','Charge_Carb', 'TotScrapWt','TempEstim', 'PPMEstim', 'CarbEstim', 'B1_GasFlow', 'B1_O2MainFlow', 'B1_CarbonFlow', 'B2_GasFlow', 'B2_O2MainFlow', 'B2_CarbonFlow', 'B3_GasFlow', 'B3_O2MainFlow', 'B3_LimeFlow', 'B1_GasRef', 'B1_O2MainRef', 'B1_CarbonRef', 'B2_GasRef', 'B2_O2MainRef', 'B2_CarbonRef', 'B3_GasRef', 'B3_O2MainRef', 'B1_GasCns', 'B1_O2MainCns','B1_CarbonCns', 'B2_GasCns', 'B2_O2MainCns', 'B2_CarbonCns', 'B3_GasCns', 'B3_O2MainCns', 'B3_LimeCns', 'TotalGasCns','TotalO2Cns', 'TotalCarbonCns', 'AdditionsCarbCharg', 'AdditionsLimeInj', 'AdditionsCarbInj', 'Scrap1Wt','Scrap2Wt', 'Scrap3Wt', 'Scrap4Wt', 'Scrap5Wt', 'Scrap7Wt',  'TempSample', 'PPMSample', 'CarbSample', 'PPMestim', 'AimPPM',  'TotalCarbInjRef', 'TotalO2Flow', 'TotCarbonInjFlow', 'SP_B1_NG', 'SP_B2_NG', 'SP_B3_NG', 'SP_B1_MainO2', 'SP_B2_MainO2', 'SP_B3_MainO2', 'SP_Inj1_C', 'SP_Inj2_C','M3PpmEstimAtSample','M3PpmSample', 'M3TempAtSample']]
+    df = df[['Current1', 'Current2', 'Current3', 'Voltage1', 'Voltage2', 'Voltage3', 'MVA1', 'MVA2', 'MVA3', 'MW1','MW2', 'MW3', 'MVAR1', 'MVAR2', 'MVAR3', 'PF1', 'PF2', 'PF3', 'MVATot', 'MWTot', 'MVARTot', 'PFTot', 'ZFeedback1', 'ZFeedback2', 'ZFeedback3', 'Res1', 'Res2', 'Res3', 'Reactance1', 'Reactance2', 'Reactance3', 'ArcLength1', 'ArcLength2','ArcLength3', 'RWI1', 'RWI2', 'RWI3', 'NeutralCurrent', 'NeutralVolts', 'Normalized Neutral Current', 'Normalized Neutral Voltage','PrimaryVolts', 'VoltageLineToLine12', 'VoltageLineToLine23', 'VoltageLineToLine31', 'PhasorAngleV1I1', 'PhasorAngleV1I2', 'PhasorAngleV1I3', 'PhasorAngleV1V2', 'PhasorAngleV1V3', 'CurrentLoadPercent1', 'CurrentLoadPercent2', 'CurrentLoadPercent3','CurrentLoadPercentAvg', 'Y1', 'Y2', 'Y3', 'ArcResistance1', 'ArcResistance2', 'ArcResistance3', 'ArcEfficiency1', 'ArcEfficiency2', 'ArcEfficiency3', 'ExtinctionVoltage1', 'ExtinctionVoltage2', 'ExtinctionVoltage3', 'ReignitionVoltage1', 'ReignitionVoltage2', 'ReignitionVoltage3', 'ArcMeanPower1', 'ArcMeanPower2', 'ArcMeanPower3', 'ArcVoltage1', 'ArcVoltage2','ArcVoltage3', 'ActFceTap_Px3', 'ActReaTap_Px3', 'HeatNumber0LSW', 'ActualCHRG_PX3', 'ChargeWt1Tons', 'ChargeWt2Tons', 'ChargeWt3Tons', 'Ontime_PX3', 'OffTime_PX3', 'EPos1_PX3', 'EPos2_PX3', 'EPos3_PX3', 'MWH_PX3', 'ElectrodeSpeed1_PX3', 'ElectrodeSpeed2_PX3','ElectrodeSpeed3_PX3', 'RawElectrodePosition1', 'RawElectrodePosition2', 'RawElectrodePosition3','RegOut1', 'RegOut2', 'RegOut3', 'Sp1CurrentReg', 'ChargeNumber', 'Sp1Imped', 'Sp2Imped', 'Sp3Imped', 'CIcounter1', 'CIcounter2', 'CIcounter3', 'SF1', 'SF2', 'SF3', 'VoltSF1', 'VoltSF2', 'VoltSF3',  'MeanSF1','MeanSF2', 'MeanSF3', 'MeanVoltSF1', 'MeanVoltSF2', 'MeanVoltSF3','MeanCurrent1', 'MeanCurrent2', 'MeanCurrent3', 'MeanVoltage1', 'MeanVoltage2', 'MeanVoltage3', 'MeanMVA1','MeanMVA2', 'MeanMVA3', 'MeanMW1', 'MeanMW2', 'MeanMW3', 'MeanMVAR1', 'MeanMVAR2', 'MeanMVAR3', 'MeanPF1','MeanPF2', 'MeanPF3', 'MeanTotMVA', 'MeanTotMW', 'MeanTotMVAR', 'MeanTotPF', 'MeanZ1', 'MeanZ2', 'MeanZ3','MeanRes1', 'MeanRes2', 'MeanRes3', 'MeanReac1', 'MeanReac2', 'MeanReac3', 'MeanLng1', 'MeanLng2', 'MeanLng3','NeutralCurrentMean', 'NeutralVoltageMean', 'PrimaryVoltageMean',  'NeutralCurrentSdev', 'NeutralVoltageSdev','I2H1', 'I2H2', 'I2H3', 'TransformerTap', 'HeatMWHPLC', 'ChrgMWH', 'ChargeNumb', 'ChargeWt1', 'ChargeWt2', 'ChargeWt3','PwrOnTime', 'TapTapTime', 'I2T1', 'I2T2', 'I2T3',  'Ph1Pressure', 'Ph2Pressure', 'Ph3Pressure', 'TiltAngle', 'PanelTemp1A', 'PanelTemp2A', 'PanelTemp2B', 'PanelTemp3A', 'PanelTemp3C','PanelTemp4A', 'PanelTemp4C','PanelTemp5D1', 'PanelTemp5D2', 'PanelTemp7A', 'PanelTemp7E', 'PanelTemp8A', 'PanelTemp8B', 'PanelTemp9A', 'TempSumpN','TempSumpS', 'RoofInlet', 'RoofOutlet', 'TC1', 'TC2', 'TC3', 'TC4', 'TC5', 'CarbInject', 'NScavenger', 'SScavenger','MainDamperPos', 'SuperBagSmpPos', 'DropBoxPsi', 'CurrentRef','ChargeWt', 'HeatWt',  'ScrapPercWt', 'HeatKWHperTon', 'PowerOnTime', 'ChargeKWHperTon', 'OperKwhPerTon','AvgSF', 'AvgCurent', 'HeatAvgMW', 'HeatI2HperMWH', 'HeatAvgI2H', 'ChargeAvgMW', 'ChrgI2HperMWH', 'ChrgAvgI2H','TotMeanMw',  'ValidTempSample', 'ValidPPMSample', 'ValidCarbonSample',  'Elec1PosFromTop', 'Elec2PosFromTop','Elec3PosFromTop','SetPointPX3','Charge_Carb', 'TotScrapWt','TempEstim', 'PPMEstim', 'CarbEstim', 'B1_GasFlow', 'B1_O2MainFlow', 'B1_CarbonFlow', 'B2_GasFlow', 'B2_O2MainFlow', 'B2_CarbonFlow', 'B3_GasFlow', 'B3_O2MainFlow', 'B3_LimeFlow', 'B1_GasRef', 'B1_O2MainRef', 'B1_CarbonRef', 'B2_GasRef', 'B2_O2MainRef', 'B2_CarbonRef', 'B3_GasRef', 'B3_O2MainRef', 'B1_GasCns', 'B1_O2MainCns','B1_CarbonCns', 'B2_GasCns', 'B2_O2MainCns', 'B2_CarbonCns', 'B3_GasCns', 'B3_O2MainCns', 'B3_LimeCns', 'TotalGasCns','TotalO2Cns', 'TotalCarbonCns', 'AdditionsCarbCharg', 'AdditionsLimeInj', 'AdditionsCarbInj', 'Scrap1Wt','Scrap2Wt', 'Scrap3Wt', 'Scrap4Wt', 'Scrap5Wt','Scrap6Wt', 'Scrap7Wt',  'TempSample', 'PPMSample', 'CarbSample', 'PPMestim', 'AimPPM',  'TotalCarbInjRef', 'TotalO2Flow', 'TotCarbonInjFlow', 'SP_B1_NG', 'SP_B2_NG', 'SP_B3_NG', 'SP_B1_MainO2', 'SP_B2_MainO2', 'SP_B3_MainO2', 'SP_Inj1_C', 'SP_Inj2_C','M3PpmEstimAtSample','M3PpmSample', 'M3TempAtSample', 'MasterProgramLog']]
+    #df = df[['Scrap1Wt','Scrap2Wt', 'Scrap3Wt', 'Scrap4Wt', 'Scrap5Wt','Scrap6Wt', 'Scrap7Wt','HeatNumber0LSW']]
     list_.append(df)
     
-
 
 frame = pd.concat(list_, axis='rows')
 
@@ -45,6 +42,8 @@ frame = pd.merge(frame,GradeCrew, how='left', left_on='HeatNumber0LSW', right_on
 # ----------------------------------------------------------------------------------------------
 frame['O2scfCarbInjLb'] = frame['TotalO2Cns']/frame['AdditionsCarbInj']
 frame['HeatNumber'] = frame['HeatNumber0LSW']
+frame.loc[frame['OperKwhPerTon'] < 0, 'OperKwhPerTon'] = 0 #locate where OperKwhPerTon is negative and clamp it to zero.
+# .loc[filter by, what to bring]
 # ----------------------------------------------------------------------------------------------
 
 
@@ -91,6 +90,7 @@ HeatGroup = frame.groupby('HeatNumber0LSW')
 GroupHeatCharge = frame.groupby(['HeatNumber0LSW','ChargeNumber'])
 GradeGroup = frame.groupby(['Grade','HeatNumber0LSW'])
 GradeHeatChargeGroup = frame.groupby(['Grade','HeatNumber0LSW','ChargeNumber'])
+CrewHeatGroup = frame.groupby(['Crew','HeatNumber0LSW'])
 
 ###################################################
 ## How to take a look at a Groupby               ##
@@ -173,6 +173,7 @@ Heats['Scrap5Wt'] = HeatGroup['Scrap5Wt'].last()
 Heats['Scrap6Wt'] = HeatGroup['Scrap6Wt'].last()
 Heats['Scrap7Wt'] = HeatGroup['Scrap7Wt'].last()
 Heats['O2scfCarbInjLb'] = HeatGroup['O2scfCarbInjLb'].last()
+Heats['MasterProgramLog'] = HeatGroup['MasterProgramLog'].last()
 
 Overview['PON'] = Heats['Ontime_PX3']
 Overview['T2T'] = Heats['TapTapTime']
@@ -182,7 +183,7 @@ Overview['I2H1'] = Heats['I2H1']
 Overview['I2H2'] = Heats['I2H2']
 Overview['I2H3'] = Heats['I2H3']
 Overview['AvgCurr'] = (Heats['Current1']+Heats['Current2']+Heats['Current3'])/3
-Overview['PrimVolts'] = Heats['PrimaryVolts']
+#Overview['PrimVolts'] = Heats['PrimaryVolts']
 Overview['B1Gas'] = Heats['B1_GasCns']
 Overview['B1O2Main'] = Heats['B1_O2MainCns']
 Overview['B1Carbon'] = Heats['B1_CarbonCns']
@@ -194,7 +195,7 @@ Overview['B3O2Main'] = Heats['B3_O2MainCns']
 Overview['B3Lime'] = Heats['B3_LimeCns']
 Overview['TotalGasCns'] = Heats['TotalGasCns']
 Overview['TotalO2Cns'] = Heats['TotalO2Cns']
-Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
+#Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
 Overview['O2scfCarbInjLb'] = Heats['O2scfCarbInjLb']
 Overview['HeatNumber'] = Heats['HeatNumber0LSW']
 
@@ -205,6 +206,13 @@ Overview['HeatNumber'] = Heats['HeatNumber0LSW']
 # ----------------------------------------------------------------------------------------------
 OverviewShort = Overview[['PON','T2T','MWH','HeatkWhTon','HeatNumber']]
 OverviewMelted = pd.melt(OverviewShort,id_vars='HeatNumber',var_name='KPI')
+
+
+#GradeHeatChargeGroup[['Scrap1Wt','Scrap2Wt','Scrap3Wt','Scrap4Wt','Scrap5Wt','Scrap6Wt','Scrap7Wt']].max()
+
+
+
+
 
 
 
@@ -230,7 +238,7 @@ plt.xlabel('MWH')
 plt.ylabel('Frequency')
 plt.title('MWH 1st Charge')
 plt.savefig('MWH1stChargeHistogram.png', bbox_inches='tight')
-#plt.show()
+plt.show()
 
 
 plt.figure()
@@ -246,7 +254,7 @@ plt.ylim(5,12)
 plt.title('MWH 1st Bucket')
 plt.grid()
 plt.savefig('MWH1stChargePlot.png', bbox_inches='tight')
-#plt.show()    
+plt.show()    
 
 
 # this is another option...
@@ -266,9 +274,46 @@ plt.xlabel('kWh/Ton')
 plt.ylabel('Frequency')
 plt.title('kWh/Ton 1st Charge')
 plt.savefig('kwhTon1stCharge.png', bbox_inches='tight')
-#plt.show()
+plt.show()
 
 
+plt.figure()
+x = MWH1
+y = Overview.HeatkWhTon
+plt.scatter(x,y, s=Heats.TapTapTime*0.4)
+plt.axhline(y=400, color='r', linestyle='-')    #draw a horizontal line at 400.
+plt.legend(loc='best')
+plt.show()
+
+
+
+# Scatter with built in ZOOM
+# +++++++++++++++++++
+# fig = plt.figure()
+# ax = plt.axes()
+# x = Heats.TapTapTime
+# y = Overview.HeatkWhTon
+# ax.scatter(x,y)
+# ax.title('kWh/Ton vs T2T Time')
+# ax.set_ylim(0,600)
+# x1 = 40
+# x2 = 100
+# # select y-range for zoomed region
+# y1 = 300
+# y2 = 400
+# axins = zoomed_inset_axes(ax, 2, loc=1) # zoom = 2
+# axins.scatter(x,y)
+# axins.set_xlim(x1, x2)
+# axins.set_ylim(y1, y2)
+# plt.xticks(visible=False)
+# plt.yticks(visible=False)
+# mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
+# plt.draw()
+# plt.show()
+
+
+# Multiple Histograms of MWH 1st Bucket by Grade
+# +++++++++++++++++++
 MWHChargePerGrade = GradeHeatChargeGroup.MWH_PX3.max().unstack()[1]
 Grades = frame.Grade.unique()
 plt.figure(1)
@@ -278,18 +323,24 @@ for grd in Grades:
     plt.subplot(4,5,index)
     plt.hist(MWHChargePerGrade[grd], bins='auto', alpha=0.5, label=grd)
     index = index +1
-    plt.legend()
+    plt.legend(loc='best')
     plt.grid(alpha=0.5)
     plt.xlabel('MWH')
     plt.ylabel('Heats')
     plt.xlim(4,12)
     plt.ylim(0,30)
 #plt.savefig('MWH1stChargebyGrade.png', bbox_inches='tight')
+plt.suptitle('MWH 1st Charge by Grade')
 plt.show()
 
-#plt.figure(2)
-#pos = 1
-#plt.subplot(4,5,pos)
+
+# 2 Bushlings
+# 3 Frag
+# 4 Pit
+# 5 Remelt
+# 6 Skulls
+# 7 other
+
 
 # OverviewShort Pairplot
 # +++++++++++++++++++
@@ -299,15 +350,26 @@ plt.show()
 
 # T2T vs HeatkWhTon
 # +++++++++++++++++++
-# sns.lmplot(x='T2T',y='HeatkWhTon',data=Overview, fit_reg=False)
-# plt.ylim(300,500)
-# plt.xlim(25,125)
-# plt.show()
+plt.figure()
+sns.lmplot(x='T2T',y='HeatkWhTon',data=Overview, fit_reg=True)
+plt.xlabel('Tap to Tap minutes')
+plt.ylabel('Heat kWh/Ton')
+plt.title('kWh/Ton vs T2T Time')
+plt.ylim(300,500)
+plt.xlim(25,125)
+plt.show()
+
+
+
+sns.set(style="darkgrid")
+Over = sns.load_dataset("Overview")
+sns.jointplot("T2T", "HeatkWhTon", data=Overview, kind="reg", xlim=(25, 125), ylim=(300, 500), color="slateblue")
+plt.show()
 
 # HeatAvgMW
 # +++++++++++++++++++
-# Heats.HeatAvgMW.plot()
-# plt.show()
+Heats.HeatAvgMW.plot()
+plt.show()
 
 
 # All Overview Boxplot
@@ -474,6 +536,8 @@ Overview.to_excel(writer,'Overview')
 writer.save()
 
 
+# frame.to_pickle(frame)
+
 
 
 
@@ -490,3 +554,91 @@ writer.save()
 # toplot.plot()
 # plt.show()
 # toplot.mean()
+
+
+
+
+
+
+
+
+
+ScrapDF = pd.DataFrame()
+ScrapDF = pd.read_csv('/home/sergio/Documents/Hoeganaes/EAF/Logs/Hoeganaes/ScrapbyGrade.csv')
+
+ScrapbyGradeGroup = ScrapDF.groupby(['Grade','HeatNo','Bucket'])
+BundlesWtbyGrade =  ScrapbyGradeGroup.Bundles.mean().unstack()[1]
+
+GradesScrap = ScrapDF.Grade.unique()
+
+plt.figure()
+plt.subplot(4,5,1)
+# plt.hist(BundlesWtbyGrade['3CUBPF'], bins=20, alpha=0.5, label='150HP',rwidth=0.95)
+# plt.legend(loc='best')
+# plt.grid(alpha=0.5)
+# plt.xlabel('Pounds')
+# plt.ylabel('Heats')
+# #plt.xlim(4,12)
+# #plt.ylim(0,30)
+# plt.suptitle('Bundles Bucket 1 [Lb] 150HP')
+# plt.show()
+
+index = 1
+for grd in GradesScrap:
+    plt.subplot(4,5,index)
+    plt.hist(BundlesWtbyGrade[grd], bins=20, alpha=0.5, label=grd, rwidth=0.95)
+    index = index +1
+    plt.legend()
+    plt.grid(alpha=0.5)
+    plt.xlabel('Pounds')
+    plt.ylabel('Heats')
+    #plt.xlim(4,12)
+    #plt.ylim(0,30)
+plt.suptitle('Bundles Bucket 1 [Lb] for' + grd)
+plt.show()
+
+
+
+# Analysis on the Sillicon Sand trial for B's and C's Heats
+#----------------------------------------------------------------------------------
+
+GradeHeatGroup = frameNoZeros.groupby(['Grade','HeatNumber0LSW'])
+GradeMeanSFx = GradeHeatGroup['AvgSF'].mean()
+
+BeforeSand = GradeMeanSFx['LOWO2B'].loc[:19470]
+AfterSand = GradeMeanSFx['LOWO2B'].loc[19482:]
+
+plt.figure()
+#plt.plot(GradeMeanSFx['LOWO2B'],'bo')
+plt.hist(BeforeSand, alpha=0.5, label='Before', bins=20)
+plt.hist(AfterSand, alpha=0.5, label='After', bins=20)
+plt.title('AvgSF for LOWO2B Heats using Si Sand')
+plt.xlabel('Heat Number')
+plt.ylabel('Average SF')
+plt.legend()
+plt.show()
+
+
+
+Heat19604 = frame.loc[frame['HeatNumber0LSW'] == 19604]
+
+plt.figure()
+
+TapX = frameNoZeros.loc[frameNoZeros.TransformerTap == 8]
+TapX['AvgCurr'] = (TapX.Current1 + TapX.Current2 + TapX.Current3)/3
+TapX['AvgMW'] = (TapX.MW1 + TapX.MW2 + TapX.MW3)/3
+TapX['AvgZ'] = (TapX.ZFeedback1 + TapX.ZFeedback2 + TapX.ZFeedback3)/3
+plt.scatter(TapX.AvgCurr, TapX.AvgZ)
+plt.show()
+
+
+Filter1 = TapX[TapX.AvgZ > 38]
+SinglePhasing = Filter1[Filter1.AvgCurr > 20]
+SinglePhasing.HeatNo.unique()
+singlePhasing = frame[frame.HeatNo == 19560]
+
+plt.figure()
+plt.plot(singlePhasing.Current1)
+plt.plot(singlePhasing.Current2)
+plt.plot(singlePhasing.Current3)
+plt.show()
