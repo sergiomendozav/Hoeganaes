@@ -24,7 +24,7 @@ for file_ in allFiles:
     df.HeatNumber0LSW = int(file_[-9:-4]) #This is to set the HeatNumber0LSW with the correct Heat Number since there is a Bug in the Reporter with the Heat No. during the conversion to CSV from RPH
     # df = df.loc[:, (df != 0).any(axis=0)] #remove all columns where data is always 0.
     df = df[['Current1', 'Current2', 'Current3', 'Voltage1', 'Voltage2', 'Voltage3', 'MVA1', 'MVA2', 'MVA3', 'MW1','MW2', 'MW3', 'MVAR1', 'MVAR2', 'MVAR3', 'PF1', 'PF2', 'PF3', 'MVATot', 'MWTot', 'MVARTot', 'PFTot', 'ZFeedback1', 'ZFeedback2', 'ZFeedback3', 'Res1', 'Res2', 'Res3', 'Reactance1', 'Reactance2', 'Reactance3', 'ArcLength1', 'ArcLength2','ArcLength3', 'RWI1', 'RWI2', 'RWI3', 'NeutralCurrent', 'NeutralVolts', 'Normalized Neutral Current', 'Normalized Neutral Voltage','PrimaryVolts', 'VoltageLineToLine12', 'VoltageLineToLine23', 'VoltageLineToLine31', 'PhasorAngleV1I1', 'PhasorAngleV1I2', 'PhasorAngleV1I3', 'PhasorAngleV1V2', 'PhasorAngleV1V3', 'CurrentLoadPercent1', 'CurrentLoadPercent2', 'CurrentLoadPercent3','CurrentLoadPercentAvg', 'Y1', 'Y2', 'Y3', 'ArcResistance1', 'ArcResistance2', 'ArcResistance3', 'ArcEfficiency1', 'ArcEfficiency2', 'ArcEfficiency3', 'ExtinctionVoltage1', 'ExtinctionVoltage2', 'ExtinctionVoltage3', 'ReignitionVoltage1', 'ReignitionVoltage2', 'ReignitionVoltage3', 'ArcMeanPower1', 'ArcMeanPower2', 'ArcMeanPower3', 'ArcVoltage1', 'ArcVoltage2','ArcVoltage3', 'ActFceTap_Px3', 'ActReaTap_Px3', 'HeatNumber0LSW', 'ActualCHRG_PX3', 'ChargeWt1Tons', 'ChargeWt2Tons', 'ChargeWt3Tons', 'Ontime_PX3', 'OffTime_PX3', 'EPos1_PX3', 'EPos2_PX3', 'EPos3_PX3', 'MWH_PX3', 'ElectrodeSpeed1_PX3', 'ElectrodeSpeed2_PX3','ElectrodeSpeed3_PX3', 'RawElectrodePosition1', 'RawElectrodePosition2', 'RawElectrodePosition3','RegOut1', 'RegOut2', 'RegOut3', 'Sp1CurrentReg', 'ChargeNumber', 'Sp1Imped', 'Sp2Imped', 'Sp3Imped', 'CIcounter1', 'CIcounter2', 'CIcounter3', 'SF1', 'SF2', 'SF3', 'VoltSF1', 'VoltSF2', 'VoltSF3',  'MeanSF1','MeanSF2', 'MeanSF3', 'MeanVoltSF1', 'MeanVoltSF2', 'MeanVoltSF3','MeanCurrent1', 'MeanCurrent2', 'MeanCurrent3', 'MeanVoltage1', 'MeanVoltage2', 'MeanVoltage3', 'MeanMVA1','MeanMVA2', 'MeanMVA3', 'MeanMW1', 'MeanMW2', 'MeanMW3', 'MeanMVAR1', 'MeanMVAR2', 'MeanMVAR3', 'MeanPF1','MeanPF2', 'MeanPF3', 'MeanTotMVA', 'MeanTotMW', 'MeanTotMVAR', 'MeanTotPF', 'MeanZ1', 'MeanZ2', 'MeanZ3','MeanRes1', 'MeanRes2', 'MeanRes3', 'MeanReac1', 'MeanReac2', 'MeanReac3', 'MeanLng1', 'MeanLng2', 'MeanLng3','NeutralCurrentMean', 'NeutralVoltageMean', 'PrimaryVoltageMean',  'NeutralCurrentSdev', 'NeutralVoltageSdev','I2H1', 'I2H2', 'I2H3', 'TransformerTap', 'HeatMWHPLC', 'ChrgMWH', 'ChargeNumb', 'ChargeWt1', 'ChargeWt2', 'ChargeWt3','PwrOnTime', 'TapTapTime', 'I2T1', 'I2T2', 'I2T3',  'Ph1Pressure', 'Ph2Pressure', 'Ph3Pressure', 'TiltAngle', 'PanelTemp1A', 'PanelTemp2A', 'PanelTemp2B', 'PanelTemp3A', 'PanelTemp3C','PanelTemp4A', 'PanelTemp4C','PanelTemp5D1', 'PanelTemp5D2', 'PanelTemp7A', 'PanelTemp7E', 'PanelTemp8A', 'PanelTemp8B', 'PanelTemp9A', 'TempSumpN','TempSumpS', 'RoofInlet', 'RoofOutlet', 'TC1', 'TC2', 'TC3', 'TC4', 'TC5', 'CarbInject', 'NScavenger', 'SScavenger','MainDamperPos', 'SuperBagSmpPos', 'DropBoxPsi', 'CurrentRef','ChargeWt', 'HeatWt',  'ScrapPercWt', 'HeatKWHperTon', 'PowerOnTime', 'ChargeKWHperTon', 'OperKwhPerTon','AvgSF', 'AvgCurent', 'HeatAvgMW', 'HeatI2HperMWH', 'HeatAvgI2H', 'ChargeAvgMW', 'ChrgI2HperMWH', 'ChrgAvgI2H','TotMeanMw',  'ValidTempSample', 'ValidPPMSample', 'ValidCarbonSample',  'Elec1PosFromTop', 'Elec2PosFromTop','Elec3PosFromTop','SetPointPX3','Charge_Carb', 'TotScrapWt','TempEstim', 'PPMEstim', 'CarbEstim', 'B1_GasFlow', 'B1_O2MainFlow', 'B1_CarbonFlow', 'B2_GasFlow', 'B2_O2MainFlow', 'B2_CarbonFlow', 'B3_GasFlow', 'B3_O2MainFlow', 'B3_LimeFlow', 'B1_GasRef', 'B1_O2MainRef', 'B1_CarbonRef', 'B2_GasRef', 'B2_O2MainRef', 'B2_CarbonRef', 'B3_GasRef', 'B3_O2MainRef', 'B1_GasCns', 'B1_O2MainCns','B1_CarbonCns', 'B2_GasCns', 'B2_O2MainCns', 'B2_CarbonCns', 'B3_GasCns', 'B3_O2MainCns', 'B3_LimeCns', 'TotalGasCns','TotalO2Cns', 'TotalCarbonCns', 'AdditionsCarbCharg', 'AdditionsLimeInj', 'AdditionsCarbInj', 'Scrap1Wt','Scrap2Wt', 'Scrap3Wt', 'Scrap4Wt', 'Scrap5Wt','Scrap6Wt', 'Scrap7Wt',  'TempSample', 'PPMSample', 'CarbSample', 'PPMestim', 'AimPPM',  'TotalCarbInjRef', 'TotalO2Flow', 'TotCarbonInjFlow', 'SP_B1_NG', 'SP_B2_NG', 'SP_B3_NG', 'SP_B1_MainO2', 'SP_B2_MainO2', 'SP_B3_MainO2', 'SP_Inj1_C', 'SP_Inj2_C','M3PpmEstimAtSample','M3PpmSample', 'M3TempAtSample', 'MasterProgramLog']]
-    #df = df[['Scrap1Wt','Scrap2Wt', 'Scrap3Wt', 'Scrap4Wt', 'Scrap5Wt','Scrap6Wt', 'Scrap7Wt','HeatNumber0LSW']]
+    #df = df[['HeatNumber0LSW','PanelTemp1A', 'PanelTemp2A', 'PanelTemp2B', 'PanelTemp3A', 'PanelTemp3C','PanelTemp4A', 'PanelTemp4C','PanelTemp5D1', 'PanelTemp5D2', 'PanelTemp7A', 'PanelTemp7E', 'PanelTemp8A', 'PanelTemp8B', 'PanelTemp9A', 'TempSumpN','TempSumpS', 'RoofInlet', 'RoofOutlet']]
     list_.append(df)
     
 
@@ -101,106 +101,128 @@ CrewHeatGroup = frame.groupby(['Crew','HeatNumber0LSW'])
 for var in aggColumnList:
     Heats[var] = HeatGroup[var].mean()
 
-# ----------------------------------------------------------------------------------------------
 
-# Getting the last value of some variables for Heat and Overview Groups
-# ----------------------------------------------------------------------------------------------
-Heats['Current1'] = HeatGroupNoZeros['Current1'].mean()
-Heats['Current2'] = HeatGroupNoZeros['Current2'].mean()
-Heats['Current3'] = HeatGroupNoZeros['Current3'].mean()
-Heats['ZFeedback1'] = HeatGroupNoZeros['ZFeedback1'].mean()
-Heats['ZFeedback2'] = HeatGroupNoZeros['ZFeedback2'].mean()
-Heats['ZFeedback3'] = HeatGroupNoZeros['ZFeedback3'].mean()
+onelist = ['1']
+for one in onelist:
+    Heats['Current1'] = HeatGroupNoZeros['Current1'].mean()    
+    Heats['Current2'] = HeatGroupNoZeros['Current2'].mean()
+    Heats['Current3'] = HeatGroupNoZeros['Current3'].mean()
+    Heats['ZFeedback1'] = HeatGroupNoZeros['ZFeedback1'].mean()
+    Heats['ZFeedback2'] = HeatGroupNoZeros['ZFeedback2'].mean()
+    Heats['ZFeedback3'] = HeatGroupNoZeros['ZFeedback3'].mean()
 
-Heats['HeatNumber0LSW'] = HeatGroup['HeatNumber0LSW'].last()
-Heats['ActualCHRG_PX3'] = HeatGroup['ActualCHRG_PX3'].last()
-Heats['ChargeWt1Tons'] = HeatGroup['ChargeWt1Tons'].last()
-Heats['ChargeWt2Tons'] = HeatGroup['ChargeWt2Tons'].last()
-Heats['ChargeWt3Tons'] = HeatGroup['ChargeWt3Tons'].last()
-Heats['Ontime_PX3'] = HeatGroup['Ontime_PX3'].last()
-Heats['OffTime_PX3'] = HeatGroup['OffTime_PX3'].last()
-Heats['MWH_PX3'] = HeatGroup['MWH_PX3'].last()
+    Heats['HeatNumber0LSW'] = HeatGroup['HeatNumber0LSW'].last()
+    Heats['ActualCHRG_PX3'] = HeatGroup['ActualCHRG_PX3'].last()
+    Heats['ChargeWt1Tons'] = HeatGroup['ChargeWt1Tons'].last()
+    Heats['ChargeWt2Tons'] = HeatGroup['ChargeWt2Tons'].last()
+    Heats['ChargeWt3Tons'] = HeatGroup['ChargeWt3Tons'].last()
+    Heats['Ontime_PX3'] = HeatGroup['Ontime_PX3'].last()
+    Heats['OffTime_PX3'] = HeatGroup['OffTime_PX3'].last()
+    Heats['MWH_PX3'] = HeatGroup['MWH_PX3'].last()
 
-Heats['I2H1'] = HeatGroup['I2H1'].last()                   
-Heats['I2H2'] = HeatGroup['I2H2'].last()
-Heats['I2H3'] = HeatGroup['I2H3'].last()
-Heats['TransformerTap'] = HeatGroup['TransformerTap'].max()
-Heats['HeatMWHPLC'] = HeatGroup['HeatMWHPLC'].last()
-Heats['ChrgMWH'] = HeatGroup['ChrgMWH'].last()
-Heats['ChargeNumb'] = HeatGroup['ChargeNumb'].last()
-Heats['ChargeWt1'] = HeatGroup['ChargeWt1'].last()
-Heats['ChargeWt2'] = HeatGroup['ChargeWt2'].last()
-Heats['ChargeWt3'] = HeatGroup['ChargeWt3'].last()
-Heats['PwrOnTime'] = HeatGroup['PwrOnTime'].last()
-Heats['TapTapTime'] = HeatGroup['TapTapTime'].last()
-Heats['I2T1'] = HeatGroup['I2T1'].last()
-Heats['I2T2'] = HeatGroup['I2T2'].last()
-Heats['I2T3'] = HeatGroup['I2T3'].last()
-Heats['CarbInject'] = HeatGroup['CarbInject'].last()
-Heats['HeatWt'] = HeatGroup['HeatWt'].last()
-Heats['HeatKWHperTon'] = HeatGroup['HeatKWHperTon'].last()
-Heats['ChargeKWHperTon'] = HeatGroup['ChargeKWHperTon'].last()
-Heats['OperKwhPerTon'] = HeatGroup['OperKwhPerTon'].last()
-Heats['HeatAvgMW'] = HeatGroup['HeatAvgMW'].last()
-Heats['HeatI2HperMWH'] = HeatGroup['HeatI2HperMWH'].last()
-Heats['HeatAvgI2H'] = HeatGroup['HeatAvgI2H'].last()
-Heats['ChargeAvgMW'] = HeatGroup['ChargeAvgMW'].last()                
-Heats['ChrgI2HperMWH'] = HeatGroup['ChrgI2HperMWH'].last()
-Heats['ChrgAvgI2H'] = HeatGroup['ChrgAvgI2H'].last()
-Heats['ValidTempSample'] = HeatGroup['ValidTempSample'].last()      
-Heats['ValidPPMSample'] = HeatGroup['ValidPPMSample'].last()
-Heats['ValidCarbonSample'] = HeatGroup['ValidCarbonSample'].last()
-Heats['Charge_Carb'] = HeatGroup['Charge_Carb'].last()
-Heats['B1_GasCns'] = HeatGroup['B1_GasCns'].last()
-Heats['B1_O2MainCns'] = HeatGroup['B1_O2MainCns'].last()
-Heats['B1_CarbonCns'] = HeatGroup['B1_CarbonCns'].last()
-Heats['B2_GasCns'] = HeatGroup['B2_GasCns'].last()
-Heats['B2_O2MainCns'] = HeatGroup['B2_O2MainCns'].last()
-Heats['B2_CarbonCns'] = HeatGroup['B2_CarbonCns'].last()
-Heats['B3_GasCns'] = HeatGroup['B3_GasCns'].last()
-Heats['B3_O2MainCns'] = HeatGroup['B3_O2MainCns'].last()
-Heats['B3_LimeCns'] = HeatGroup['B3_LimeCns'].last()
-Heats['TotalGasCns'] = HeatGroup['TotalGasCns'].last()
-Heats['TotalO2Cns'] = HeatGroup['TotalO2Cns'].last()
-Heats['AdditionsCarbCharg'] = HeatGroup['AdditionsCarbCharg'].last()
-Heats['AdditionsLimeInj'] = HeatGroup['AdditionsLimeInj'].last()
-Heats['AdditionsCarbInj'] = HeatGroup['AdditionsCarbInj'].last()
-Heats['Scrap1Wt'] = HeatGroup['Scrap1Wt'].last()
-Heats['Scrap2Wt'] = HeatGroup['Scrap2Wt'].last()
-Heats['Scrap3Wt'] = HeatGroup['Scrap3Wt'].last()
-Heats['Scrap4Wt'] = HeatGroup['Scrap4Wt'].last()
-Heats['Scrap5Wt'] = HeatGroup['Scrap5Wt'].last()
-Heats['Scrap6Wt'] = HeatGroup['Scrap6Wt'].last()
-Heats['Scrap7Wt'] = HeatGroup['Scrap7Wt'].last()
-Heats['O2scfCarbInjLb'] = HeatGroup['O2scfCarbInjLb'].last()
-Heats['MasterProgramLog'] = HeatGroup['MasterProgramLog'].last()
+    Heats['I2H1'] = HeatGroup['I2H1'].last()                   
+    Heats['I2H2'] = HeatGroup['I2H2'].last()
+    Heats['I2H3'] = HeatGroup['I2H3'].last()
+    Heats['TransformerTap'] = HeatGroup['TransformerTap'].max()
+    Heats['HeatMWHPLC'] = HeatGroup['HeatMWHPLC'].last()
+    Heats['ChrgMWH'] = HeatGroup['ChrgMWH'].last()
+    Heats['ChargeNumb'] = HeatGroup['ChargeNumb'].last()
+    Heats['ChargeWt1'] = HeatGroup['ChargeWt1'].last()
+    Heats['ChargeWt2'] = HeatGroup['ChargeWt2'].last()
+    Heats['ChargeWt3'] = HeatGroup['ChargeWt3'].last()
+    Heats['PwrOnTime'] = HeatGroup['PwrOnTime'].last()
+    Heats['TapTapTime'] = HeatGroup['TapTapTime'].last()
+    Heats['I2T1'] = HeatGroup['I2T1'].last()
+    Heats['I2T2'] = HeatGroup['I2T2'].last()
+    Heats['I2T3'] = HeatGroup['I2T3'].last()
+    Heats['CarbInject'] = HeatGroup['CarbInject'].last()
+    Heats['HeatWt'] = HeatGroup['HeatWt'].last()
+    Heats['HeatKWHperTon'] = HeatGroup['HeatKWHperTon'].last()
+    Heats['ChargeKWHperTon'] = HeatGroup['ChargeKWHperTon'].last()
+    Heats['OperKwhPerTon'] = HeatGroup['OperKwhPerTon'].last()
+    Heats['HeatAvgMW'] = HeatGroup['HeatAvgMW'].last()
+    Heats['HeatI2HperMWH'] = HeatGroup['HeatI2HperMWH'].last()
+    Heats['HeatAvgI2H'] = HeatGroup['HeatAvgI2H'].last()
+    Heats['ChargeAvgMW'] = HeatGroup['ChargeAvgMW'].last()                
+    Heats['ChrgI2HperMWH'] = HeatGroup['ChrgI2HperMWH'].last()
+    Heats['ChrgAvgI2H'] = HeatGroup['ChrgAvgI2H'].last()
+    Heats['ValidTempSample'] = HeatGroup['ValidTempSample'].last()      
+    Heats['ValidPPMSample'] = HeatGroup['ValidPPMSample'].last()
+    Heats['ValidCarbonSample'] = HeatGroup['ValidCarbonSample'].last()
+    Heats['Charge_Carb'] = HeatGroup['Charge_Carb'].last()
+    Heats['B1_GasCns'] = HeatGroup['B1_GasCns'].last()
+    Heats['B1_O2MainCns'] = HeatGroup['B1_O2MainCns'].last()
+    Heats['B1_CarbonCns'] = HeatGroup['B1_CarbonCns'].last()
+    Heats['B2_GasCns'] = HeatGroup['B2_GasCns'].last()
+    Heats['B2_O2MainCns'] = HeatGroup['B2_O2MainCns'].last()
+    Heats['B2_CarbonCns'] = HeatGroup['B2_CarbonCns'].last()
+    Heats['B3_GasCns'] = HeatGroup['B3_GasCns'].last()
+    Heats['B3_O2MainCns'] = HeatGroup['B3_O2MainCns'].last()
+    Heats['B3_LimeCns'] = HeatGroup['B3_LimeCns'].last()
+    Heats['TotalGasCns'] = HeatGroup['TotalGasCns'].last()
+    Heats['TotalO2Cns'] = HeatGroup['TotalO2Cns'].last()
+    Heats['AdditionsCarbCharg'] = HeatGroup['AdditionsCarbCharg'].last()
+    Heats['AdditionsLimeInj'] = HeatGroup['AdditionsLimeInj'].last()
+    Heats['AdditionsCarbInj'] = HeatGroup['AdditionsCarbInj'].last()
+    Heats['Scrap1Wt'] = HeatGroup['Scrap1Wt'].last()
+    Heats['Scrap2Wt'] = HeatGroup['Scrap2Wt'].last()
+    Heats['Scrap3Wt'] = HeatGroup['Scrap3Wt'].last()
+    Heats['Scrap4Wt'] = HeatGroup['Scrap4Wt'].last()
+    Heats['Scrap5Wt'] = HeatGroup['Scrap5Wt'].last()
+    Heats['Scrap6Wt'] = HeatGroup['Scrap6Wt'].last()
+    Heats['Scrap7Wt'] = HeatGroup['Scrap7Wt'].last()
+    Heats['O2scfCarbInjLb'] = HeatGroup['O2scfCarbInjLb'].last()
+    Heats['MasterProgramLog'] = HeatGroup['MasterProgramLog'].last()
 
-Overview['PON'] = Heats['Ontime_PX3']
-Overview['T2T'] = Heats['TapTapTime']
-Overview['MWH'] = Heats['MWH_PX3']
-Overview['HeatkWhTon'] = Heats['OperKwhPerTon'] 
-Overview['I2H1'] = Heats['I2H1']
-Overview['I2H2'] = Heats['I2H2']
-Overview['I2H3'] = Heats['I2H3']
-Overview['AvgCurr'] = (Heats['Current1']+Heats['Current2']+Heats['Current3'])/3
-#Overview['PrimVolts'] = Heats['PrimaryVolts']
-Overview['B1Gas'] = Heats['B1_GasCns']
-Overview['B1O2Main'] = Heats['B1_O2MainCns']
-Overview['B1Carbon'] = Heats['B1_CarbonCns']
-Overview['B2Gas'] = Heats['B2_GasCns']
-Overview['B2O2Main'] = Heats['B2_O2MainCns']
-Overview['B2Carbon'] = Heats['B2_CarbonCns']
-Overview['B3Gas'] = Heats['B3_GasCns']
-Overview['B3O2Main'] = Heats['B3_O2MainCns']
-Overview['B3Lime'] = Heats['B3_LimeCns']
-Overview['TotalGasCns'] = Heats['TotalGasCns']
-Overview['TotalO2Cns'] = Heats['TotalO2Cns']
-#Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
-Overview['O2scfCarbInjLb'] = Heats['O2scfCarbInjLb']
-Overview['HeatNumber'] = Heats['HeatNumber0LSW']
+    # Heats['TempSumpNAvg'] = HeatGroup['TempSumpN'].mean()
+    # Heats['TempSumpNMax'] = HeatGroup['TempSumpN'].max()
+    # Heats['TempSumpSAvg'] = HeatGroup['TempSumpS'].mean()
+    # Heats['TempSumpSMax'] = HeatGroup['TempSumpS'].max()
+    # Heats['PanelTemp1A'] = HeatGroup['PanelTemp1A'].mean()
+    # Heats['PanelTemp2A'] = HeatGroup['PanelTemp2A'].mean()
+    # Heats['PanelTemp2B'] = HeatGroup['PanelTemp2B'].mean()
+    # Heats['PanelTemp3A'] = HeatGroup['PanelTemp3A'].mean()
+    # Heats['PanelTemp3C'] = HeatGroup['PanelTemp3C'].mean()
+    # Heats['PanelTemp4A'] = HeatGroup['PanelTemp4A'].mean()
+    # Heats['PanelTemp4C'] = HeatGroup['PanelTemp4C'].mean()
+    # Heats['PanelTemp5D1'] = HeatGroup['PanelTemp5D1'].mean()
+    # Heats['PanelTemp5D2'] = HeatGroup['PanelTemp5D2'].mean()
+    # Heats['PanelTemp7A'] = HeatGroup['PanelTemp7A'].mean()
+    # Heats['PanelTemp7E'] = HeatGroup['PanelTemp7E'].mean() 
+    # Heats['PanelTemp8A'] = HeatGroup['PanelTemp8A'].mean() 
+    # Heats['PanelTemp8B'] = HeatGroup['PanelTemp8B'].mean() 
+    # Heats['PanelTemp9A'] = HeatGroup['PanelTemp9A'].mean()
+    # Heats['RoofInlet'] = HeatGroup['RoofInlet'].mean()
+    # Heats['RoofOutlet'] = HeatGroup['RoofOutlet'].mean()
+ 
 
 
-# ----------------------------------------------------------------------------------------------
+    Overview['PON'] = Heats['Ontime_PX3']
+    Overview['T2T'] = Heats['TapTapTime']
+    Overview['MWH'] = Heats['MWH_PX3']
+    Overview['HeatkWhTon'] = Heats['OperKwhPerTon'] 
+    Overview['I2H1'] = Heats['I2H1']
+    Overview['I2H2'] = Heats['I2H2']
+    Overview['I2H3'] = Heats['I2H3']
+    Overview['AvgCurr'] = (Heats['Current1']+Heats['Current2']+Heats['Current3'])/3
+    #Overview['PrimVolts'] = Heats['PrimaryVolts']
+    Overview['B1Gas'] = Heats['B1_GasCns']
+    Overview['B1O2Main'] = Heats['B1_O2MainCns']
+    Overview['B1Carbon'] = Heats['B1_CarbonCns']
+    Overview['B2Gas'] = Heats['B2_GasCns']
+    Overview['B2O2Main'] = Heats['B2_O2MainCns']
+    Overview['B2Carbon'] = Heats['B2_CarbonCns']
+    Overview['B3Gas'] = Heats['B3_GasCns']
+    Overview['B3O2Main'] = Heats['B3_O2MainCns']
+    Overview['B3Lime'] = Heats['B3_LimeCns']
+    Overview['TotalGasCns'] = Heats['TotalGasCns']
+    Overview['TotalO2Cns'] = Heats['TotalO2Cns']
+    #Overview['TotalCarbonCns'] = Heats['TotalCarbonCns']
+    Overview['O2scfCarbInjLb'] = Heats['O2scfCarbInjLb']
+    Overview['HeatNumber'] = Heats['HeatNumber0LSW']
+del onelist
+
+
 
 # Some other variables for plots
 # ----------------------------------------------------------------------------------------------
@@ -502,9 +524,10 @@ y3 = SFTap['MeanSF3'][SFTap.ActFceTap_Px3 == 6]
 
 # Moka Injection Trend
 # +++++++++++++++++++
-# CarbonCnsMax = HeatGroup[['B1_CarbonCns','B2_CarbonCns']].max()
-# CarbonCnsMax.plot(style='.-')
-# plt.show()
+CarbonCnsMax = HeatGroup[['B1_CarbonCns','B2_CarbonCns']].max()
+CarbonTotMax = CarbonCnsMax.B1_CarbonCns + CarbonCnsMax.B2_CarbonCns
+CarbonTotMax.plot(style='.-')
+plt.show()
 
 # Primary Volts Plot
 # +++++++++++++++++++
@@ -527,12 +550,30 @@ y3 = SFTap['MeanSF3'][SFTap.ActFceTap_Px3 == 6]
 # plt.show()
 
 
+B1GasFlow = frame.B1_GasFlow
+B1GasRef = frame.B1_GasRef
+plt.figure()
+plt.title('Gas Ref vs Flow')
+plt.ylabel('Ref scfm')
+plt.xlabel('Flow scfm')
+plt.ylim(0,300)
+plt.xlim(0,300)
+plt.scatter(B1GasFlow,B1GasRef)
+plt.grid()
+plt.show()
+
+
+B1Gas = HeatGroup[['B1_GasFlow','B1_GasRef']].max()
+B1Gas.plot(style='.-')
+plt.show()
+# 'B1_GasFlow', 'B1_O2MainFlow'
+# 'B1_GasRef', 'B1_O2MainRef'
 
 # Write to Excel
 # ----------------------------------------------------------------------------------------------
 writer = pd.ExcelWriter('Heats.xlsx')
 Heats.to_excel(writer,'Heats')
-Overview.to_excel(writer,'Overview')
+#Overview.to_excel(writer,'Overview')
 writer.save()
 
 
